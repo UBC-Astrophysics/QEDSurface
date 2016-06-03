@@ -130,7 +130,7 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\
        qtot=0;
        for (i=1;i<=3;i++) {
          printf(" %8.5f",omega_g[i]);
-	 qtot+=omega_g[i]*s[i];
+	 qtot-=omega_g[i]*s[i];
        }
        
        /* correct the value of rdotm so that the Newtonian calculation
