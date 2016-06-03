@@ -51,6 +51,7 @@ integrate_path(double omega0_p, double mass_p,
    
   s[LENGTH]=0;
   s[RADIUS]=radius0;
+  s[OMDL]=0;
 
 #if 0
   /* calculate the initial value of phi */

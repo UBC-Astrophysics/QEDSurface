@@ -144,9 +144,10 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
 #  Column 12 - azimuth angle relative to local B-field [degrees], 0 to 180\n\
 #  Column 13 - initial intensity in X mode\n\
 #  Column 14 - initial intensity in O mode\n\
-#  Column 15 - final intensity in Q [relative to projected magnetic moment]\n");
+#  Column 15 - final intensity in Q [relative to projected magnetic moment]\n\
+#  Column 16 - Integral of Omega ds -- depolarization\n");
 
-   printf("#   b       beta      s1       s2      s3      mago      o1        o2      o3   mag_colat    theta    phi       X         O        Q\n");
+   printf("#   b       beta      s1       s2      s3      mago      o1        o2      o3   mag_colat    theta    phi       X         O        Q      IOmdL\n");
 
 
   nstep=1; /* number of initial steps per quadrant */
@@ -190,7 +191,7 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
 	res[2]=exp(res[2]);
 	res[3]=exp(res[3]);
       }
-      printf(" %10.4e %10.4e %10.4e\n",res[2],res[3],qtot);
+      printf(" %10.4e %10.4e %10.4e %10.4e\n",res[2],res[3],qtot,s[OMDL]);
       
     }
   }

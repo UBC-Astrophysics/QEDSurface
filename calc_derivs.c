@@ -279,9 +279,7 @@ void
 derivs(double lambda, double *s, double *ds) {
   double grr, radius, r2, dsdlambda;
   int i;
-  for (i=S1;i<=S3;i++) {
-
-  }
+  
   grr=1/(1-2*mass/(radius=s[RADIUS]));
   r2=radius*radius;
 
@@ -294,6 +292,9 @@ derivs(double lambda, double *s, double *ds) {
   ds[S1] = (omega_g[2]*s[S3] - omega_g[3]*s[S2])*magomega_g;
   ds[S2] = (omega_g[3]*s[S1] - omega_g[1]*s[S3])*magomega_g;
   ds[S3] = (omega_g[1]*s[S2] - omega_g[2]*s[S1])*magomega_g;
+
+  ds[OMDL] = magomega_g;
+
 #ifdef VERBOSE
   for (i=S1;i<=S3;i++) {
     printf("%g %g %g\n",s[i],ds[i],omega_g[i]);

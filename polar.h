@@ -18,7 +18,8 @@
 #define PHI 4			/* position of photon */
 #define RADIUS 5                /* radius of photon */
 #define LENGTH 6		/* length along the trajectory */
-#define NVAR 6
+#define OMDL 7
+#define NVAR 7
 
 void
 integrate_path(double omega0_p, double mass_p, 

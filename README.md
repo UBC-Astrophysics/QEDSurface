@@ -12,7 +12,9 @@ with the (X-O) intensity at the point of emission.  If your model
 has emission with other polarizations (e.g. horizontal/vertical),
 this program is not for you yet.  We are working on improvements
 for this situation to propagate all three Stokes's parameters
-through the field.
+through the field.  These modes will be depolarized by QED; the
+extent of depolarization in radians along a trajectory is given
+in the final column.
 
 It also calculates the location in magnetic colatitude of where
 the photon is emitted at the given radius as well as the initial
