@@ -17,16 +17,25 @@ main(int argc, char *argv[])
   double B0, nu, k0, omega0, rinf, radius0, mass; 
   double x, b, alpha, beta, step, xmax;
   extern double rdotm_start, azimuth_start;
-  double rdotm_newtonian, rdotb2, f, psi, f2, psi2;
+  double rdotm_newtonian, rdotb2, f, psi, f2, psi2, qtot;
   
   int i, nstep;
 
    if ( argc<5) {
-     printf("Format:\n\n pfield _mu_ _nu_ _mass_ _radius_ _alpha_ [models]\n");
+     printf("\n\
+Format:\n\n\
+   pfield _mu_ _nu_ _mass_ _radius_ _alpha_ [models]\n\n\
+_mu_     magnetic dipole moment in G cm^3\n\
+_nu_     photon frequency in Hz\n\
+_mass_   mass in cm, i.e. GM/c^2\n\
+_radius_ radius in cm\n\
+_alpha_  angle of magnetic moment with line of sight in degrees\n\
+[models] optional spectral models to use\n\n");
+     
      return(-1);
    }
 
-      printf("# ");
+   printf("# ");
    for (i=0;i<argc;i++) {
      printf(" %s",argv[i]);
    }
@@ -77,49 +86,54 @@ main(int argc, char *argv[])
    } else {
      xmax=1;
    }
-   printf("%g %g %g\n",xmax,radius0,mass);
-   printf("#   b       beta      s1       s2      s3      mago      o1        o2      o3       mag_lat    theta    phi       X         O\n");
+   printf("# %g %g %g\n",xmax,radius0,mass);
+   #
+   printf("\
+#  Column 1  - b, impact parameter in cm\n\
+#  Column 2  - beta, angle in plane of sky between image element and magnetic moment [radians]\n\
+#              beta defines the angle of the photon geodesic plane with respect to the magnetic moment\n\
+#  Column 3  - s1 final Stokes Q [relative to photon geodesic plane]\n\
+#  Column 4  - s2 final Stokes U\n\
+#  Column 5  - s3 final Stokes V\n\
+#  Column 6  - mago, initial value of Omega\n\
+#  Column 7  - o1 final Omega Q [relative to geodesic plane]\n\
+               the final values of Omega give the direction of the final B-field wrt geodesic plane\n\
+#  Column 8  - o2 final Omega U\n\
+#  Column 9  - o3 final Omega V\n\
+#  Column 10 - magnetic colatitude of emission point [degrees]\n\
+#  Column 11 - zenith angle [degrees]\n\
+#  Column 12 - azimuth angle relative to local B-field [degrees]\n\
+#  Column 13 - initial intensity in X mode\n\
+#  Column 14 - initial intensity in O mode\n\
+#  Column 15 - final intensity in Q [relative to projected magnetic moment]\n");
+
+   printf("#   b       beta      s1       s2      s3      mago      o1        o2      o3   mag_colat    theta    phi       X         O        Q\n");
 
 
-#ifdef PROGRESSIVE
-   nstep=2;
-   for (x=0.1;x<xmax;x+=0.1,nstep+=2) {
-#else
-   for (x=1e-5;x<xmax;x+=0.1) {
-#endif
+   nstep=1;
+   for (x=0.05;x<xmax;x+=0.1,nstep+=2) {
      b=x*rinf;
-#ifdef DOSPOKES
-     for (beta=1e-5;beta<PI+1e-4;beta+=PI/6) {
-#else
-#ifdef PROGRESSIVE
      step=PI/(2*nstep);
-     for (beta=step*0.5;beta<2*PI;beta+=step) {
-#else
-     step=PI/STEPFRAC/x;
-     for (beta=0.5*step;beta<PI/2+1e-4;beta+=step) {
-#endif
-#endif
+#pragma omp parallel for schedule(guided)
+     /* only do one half of the image, the other half by symmetry has
+	s2->-s2, s3->-s3, o2->-o2, o3->-o3, the rest are the same */
+
+     for (beta=step*0.5;beta<PI;beta+=step) {
        integrate_path(omega0,mass,radius0,b,alpha,beta,s,0);
        printf("%8.0f %8.6f",b,beta);
        for (i=S1;i<=S3;i++) {
 	 printf(" %8.5f",s[i]);
        }
        printf(" %8.5g",magomega_g);
+       qtot=0;
        for (i=1;i<=3;i++) {
-	 printf(" %8.5f",omega_g[i]);
+         printf(" %8.5f",omega_g[i]);
+	 qtot+=omega_g[i]*s[i];
        }
        
        /* correct the value of rdotm so that the Newtonian calculation
 	  of the angle of the field to the normal will yield the GR value */
-#if 0
-       calcfpsi(2*mass/radius0,&f,&psi,&f2,&psi2);
-       f2=f*f; psi2=psi*psi;
-       rdotb2=4*f2*rdotm_start*rdotm_start/(rdotm_start*rdotm_start*(4*f2-psi2)+psi2);
-
-       rdotm_newtonian=sqrt( rdotb2 / ( 4 - 3*rdotb2) );
-#else
        rdotm_newtonian=rdotm_start;  
-#endif
 
        printf(" %8.4f %8.4f %8.4f",args[0]=acos(rdotm_newtonian)*180.0/PI,asin(x)*180.0/PI,
 	      args[2]=azimuth_start*180.0/PI);
@@ -127,38 +141,12 @@ main(int argc, char *argv[])
 	 if (args[0]>90) args[0]=180-args[0];
 	 args[1]=x;
 	 evaltree(&parent_node,args,4, res);
-#if 0	 
-	 for (i=0;i<4;i++) {
-	   printf(" %g",args[i]);
-	 }
-	 for (i=0;i<NDATA;i++) {
-	   printf(" %g",res[i]);
-	 }
-#endif
 	 res[2]=exp(res[2]);
 	 res[3]=exp(res[3]);
        }
-       printf(" %10.4e %10.4e\n",res[2],res[3]);
+       printf(" %10.4e %10.4e %10.4e\n",res[2],res[3],qtot);
 
      }
-#ifndef DOSPOKES
-#ifndef PROGRESSIVE
-     for (beta=PI-0.5*step;beta>PI/2+0.5*step;beta-=step) {
-       integrate_path(omega0,mass,radius0,b,alpha,beta,s,0);
-       printf("%8.0f %8.6f",b,beta);
-       for (i=S1;i<=S3;i++) {
-	 printf(" %8.5f",s[i]);
-       }
-       printf(" %8.6g",magomega_g);
-       for (i=1;i<=3;i++) {
-	 printf(" %8.5f",omega_g[i]);
-       }
-       printf(" %8.4f %8.4f %8.4f %8.4f\n",acos(rdotm_start)*180.0/PI,asin(x)*180.0/PI,
-	      azimuth_start*180.0/PI,beta*180.0/PI);
-
-     }
-#endif
-#endif
    }
    return(0);
 }

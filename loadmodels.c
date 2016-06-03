@@ -137,7 +137,7 @@ loadtrjfile(char *filename, data_node *nodeptr) {
   }
 
   fclose(in);
-  
+  return(0);
 }
 
 
@@ -328,7 +328,6 @@ evaltree(data_node *nodeptr, double *args, int nargs, double *res) {
     ascend=p2->data[0]-p1->data[0];
     //    printf("ascend=%g\n",ascend);
     if ( (value-p2->data[0])*ascend > 0 ) {
-      p2;
       p1=p2-1;
     } else if ( (value-p1->data[0])*ascend < 0 ) {
       p2=p1+1;
