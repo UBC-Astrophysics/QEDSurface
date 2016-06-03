@@ -19,7 +19,7 @@ main(int argc, char *argv[])
   extern double rdotm_start, azimuth_start;
   double rdotm_newtonian, rdotb2, f, psi, f2, psi2, qtot;
   
-  int i, nstep;
+  int i, j, nstep;
 
    if ( argc<5) {
      printf("\n\
@@ -110,15 +110,17 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\
    printf("#   b       beta      s1       s2      s3      mago      o1        o2      o3   mag_colat    theta    phi       X         O        Q\n");
 
 
-   nstep=1;
+  nstep=1; /* number of initial steps per quadrant */
+  
    for (x=0.05;x<xmax;x+=0.1,nstep+=2) {
      b=x*rinf;
      step=PI/(2*nstep);
-#pragma omp parallel for schedule(guided)
      /* only do one half of the image, the other half by symmetry has
 	s2->-s2, s3->-s3, o2->-o2, o3->-o3, the rest are the same */
 
-     for (beta=step*0.5;beta<PI;beta+=step) {
+     /*     do the upper two quadrants */
+     for (j=0;j<2*nstep;j++) {
+       beta=(j+0.5)*step;
        integrate_path(omega0,mass,radius0,b,alpha,beta,s,0);
        printf("%8.0f %8.6f",b,beta);
        for (i=S1;i<=S3;i++) {

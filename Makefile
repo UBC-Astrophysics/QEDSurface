@@ -1,12 +1,6 @@
 .c.o :
 	$(CC) -c $(CFLAGS) $*.c
-CC=gcc  -g 
-#
-# If you have OpenMP support in the compiler, uncomment the following line
-#
-# FOPENMP = -fopenmp
-#
-CFLAGS += $(FOPENMP)
+CC=gcc  
 #
 all : pfield 
 PFIELDO = pfield.o integrate_path.o phix.o calc_derivs.o loadmodels.o calcfpsi.o \
@@ -15,8 +9,7 @@ PFIELDO = pfield.o integrate_path.o phix.o calc_derivs.o loadmodels.o calcfpsi.o
 pfield : $(PFIELDO)
 	$(CC) -o pfield $(PFIELDO) -lm
 clean :
-	rm pfield
-	rm *.o
+	rm pfield *.o
 
 
 
