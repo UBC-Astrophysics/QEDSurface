@@ -8,7 +8,11 @@ with unit value.
 
 It spaces the image evenly so that one can calculate the total
 polarized flux by simply summing the product of resulting Q values
-with the (X-O) intensity at the point of emission.
+with the (X-O) intensity at the point of emission.  If your model
+has emission with other polarizations (e.g. horizontal/vertical),
+this program is not for you yet.  We are working on improvements
+for this situation to propagate all three Stokes's parameters
+through the field.
 
 It also calculates the location in magnetic colatitude of where
 the photon is emitted at the given radius as well as the initial
@@ -16,8 +20,10 @@ zenith angle and azimuth with respect to the magnetic pole.
 
 It accounts for light bending and gravitational redshift
 in the Schwarzschild metric even if the radius is less than the
-photon orbit.
-
+photon orbit.  It also accounts for the relativistic distortion
+of a centred dipole correctly.  If you examine the file
+`calc_derivs.c`, you can see that you can also specify an offset
+dipole or quadrupole field too (no relativity here though).
 ```
 Format:
 
