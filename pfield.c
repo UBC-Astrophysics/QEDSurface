@@ -95,7 +95,7 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\
 #  Column 3  - s1 final Stokes Q [relative to photon geodesic plane]\n\
 #  Column 4  - s2 final Stokes U\n\
 #  Column 5  - s3 final Stokes V\n\
-#  Column 6  - mago, initial value of Omega\n\
+#  Column 6  - mago, final value of Omega\n\
 #  Column 7  - o1 final Omega Q [relative to geodesic plane]\n\
                the final values of Omega give the direction of the final B-field wrt geodesic plane\n\
 #  Column 8  - o2 final Omega U\n\
