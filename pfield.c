@@ -33,10 +33,10 @@ _mass_   mass in cm, i.e. GM/c^2\n\
 _radius_ radius in cm\n\
 _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
 [optional parameters]\n\n\
-          --doall   calculate for the top and bottom of the image\n\
-                    (for non-symmetric fields)\n\
-          --nb      number of impact parameters to calculate (10)\n\
-          optional spectral models to use\n\n");
+         --doall   calculate for the top and bottom of the image\n\
+                   (for non-symmetric fields)\n\
+         --nb      number of impact parameters to calculate (10)\n\
+         optional spectral models to use\n\n");
      
      return(-1);
    }
