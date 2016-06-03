@@ -1,6 +1,7 @@
 .c.o :
 	$(CC) -c $(CFLAGS) $*.c
-CC=gcc  
+CC=gcc
+CFLAGS = -O2
 #
 all : pfield 
 PFIELDO = pfield.o integrate_path.o phix.o calc_derivs.o loadmodels.o calcfpsi.o \
