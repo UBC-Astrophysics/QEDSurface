@@ -6,7 +6,8 @@
 #define TWO_OVER_FIFTEEN_ALPHA_OVER_4PI 7.7425e-5
 #define BCRIT 4.41405e13
 #define SOFT 0.005
-
+#define Planck_h 4.13566e-18 /* keV s */
+#define MSUN 1.4770885e5 /* cm */
 
 #define X 1
 #define Y 2

@@ -10,11 +10,19 @@ It spaces the image evenly so that one can calculate the total
 polarized flux by simply summing the product of resulting Q values
 with the (X-O) intensity at the point of emission.  If your model
 has emission with other polarizations (e.g. horizontal/vertical),
-this program is not for you yet.  We are working on improvements
-for this situation to propagate all three Stokes's parameters
-through the field.  These modes will be depolarized by QED; the
-extent of depolarization in radians along a trajectory is given
-in the final column.
+this program is not for you yet.
+
+We are working on improvements for this situation to propagate all
+three Stokes's parameters through the field.  These modes will be
+depolarized by QED; the extent of depolarization in radians along a
+trajectory is given in the final column.  Some important caveats for
+this calculation are that the value of omega is limited to a maximum
+value to allow the integration to proceed in a reasonable time, so the
+extent of depolarization is in princple a lower limit.  On the other
+hand, the magnitude of omega is determined using the weak-field limit,
+so if the surface field exceeds BQED, the formula isn't strictly
+correct. The value of omega achieved is probably larger than the
+maximum value anyhow, so again the final column is a lower limit.
 
 It also calculates the location in magnetic colatitude of where
 the photon is emitted at the given radius as well as the initial
@@ -26,6 +34,7 @@ photon orbit.  It also accounts for the relativistic distortion
 of a centred dipole correctly.  If you examine the file
 `calc_derivs.c`, you can see that you can also specify an offset
 dipole or quadrupole field too (no relativity here though).
+
 ```
 Format:
 

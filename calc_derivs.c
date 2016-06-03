@@ -264,10 +264,8 @@ calc_omega(double *omega, double radius, double phi, double *ds) {
       near to the star than we observe by (1-2*M/r)^{-1/2} */
 
    magomega=bp2*omega0*grr;
-   if (magomega > omega_soft) {
-     magomega=omega_soft; 
-   }
-
+   if (magomega>omega_soft) magomega=omega_soft;
+   
    omega[1]=2*cosangkcrossrbperp*cosangkcrossrbperp-1;
    omega[2]=-2*cosangkcrossrbperp*sinangkcrossrbperp;
    omega[3]=0;
@@ -288,7 +286,7 @@ derivs(double lambda, double *s, double *ds) {
   ds[LENGTH]=dsdlambda=sqrt(grr);
   
   magomega_g=calc_omega(omega_g,radius,s[PHI],ds)/dsdlambda;
-  
+
   ds[S1] = (omega_g[2]*s[S3] - omega_g[3]*s[S2])*magomega_g;
   ds[S2] = (omega_g[3]*s[S1] - omega_g[1]*s[S3])*magomega_g;
   ds[S3] = (omega_g[1]*s[S2] - omega_g[2]*s[S1])*magomega_g;

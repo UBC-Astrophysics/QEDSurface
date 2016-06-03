@@ -124,7 +124,9 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
    } else {
      xmax=1;
    }
-   printf("# Rinf= %g xmax= %g radius0= %g mass= %g\n",rinf,xmax,radius0,mass);
+   printf("#  nu= %g Hz B0= %g BQED = %g G E= %g keV\n#  Rinf= %g cm xmax= %g radius0= %g cm mass= %g cm = %g Msun 0.2*omega0R= %g\n#\n",
+	  nu,B0,B0*BCRIT,nu*Planck_h,
+	  rinf,xmax,radius0,mass,mass/MSUN,0.2*omega0*radius0);
    #
    printf("\
 #  Column 1  - b, impact parameter in cm\n\
@@ -135,8 +137,8 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
 #  Column 5  - s3 final Stokes V\n\
 #  Column 6  - mago, magnitude of final value of Omega\n\
 #  Column 7  - o1 final Omega Q [relative to geodesic plane]\n\
-               the final values of Omega give the direction of the final B-field wrt geodesic plane\n\
-               the first component is perpendicuar to B-field\n\
+#              the final values of Omega give the direction of the final B-field wrt geodesic plane\n\
+#              the first component is perpendicuar to B-field\n\
 #  Column 8  - o2 final Omega U\n\
 #  Column 9  - o3 final Omega V\n\
 #  Column 10 - magnetic colatitude of emission point [degrees]\n\
@@ -145,9 +147,8 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
 #  Column 13 - initial intensity in X mode\n\
 #  Column 14 - initial intensity in O mode\n\
 #  Column 15 - final intensity in Q [relative to projected magnetic moment]\n\
-#  Column 16 - Integral of Omega ds -- depolarization\n");
-
-   printf("#   b       beta      s1       s2      s3      mago      o1        o2      o3   mag_colat    theta    phi       X         O        Q      IOmdL\n");
+#  Column 16 - Integral of Omega ds -- depolarization bandwidth is Energy of Photon/(column 16)\n#\n");
+   printf("#   b        beta      s1       s2      s3       mago        o1        o2      o3    mag_colat  theta    phi       X         O            Q         IOmdL\n");
 
 
   nstep=1; /* number of initial steps per quadrant */
@@ -167,7 +168,7 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
     for (j=0;j<angfactor*nstep;j++) {
       beta=(j+0.5)*step;
       integrate_path(omega0,mass,radius0,b,alpha,beta,s,0);
-      printf("%8.0f %8.6f",b,beta);
+      printf("%8.5g %8.6f",b,beta);
       for (i=S1;i<=S3;i++) {
 	printf(" %8.5f",s[i]);
       }
