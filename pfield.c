@@ -95,14 +95,15 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\
 #  Column 3  - s1 final Stokes Q [relative to photon geodesic plane]\n\
 #  Column 4  - s2 final Stokes U\n\
 #  Column 5  - s3 final Stokes V\n\
-#  Column 6  - mago, final value of Omega\n\
+#  Column 6  - mago, magnitude of final value of Omega\n\
 #  Column 7  - o1 final Omega Q [relative to geodesic plane]\n\
                the final values of Omega give the direction of the final B-field wrt geodesic plane\n\
+               the first component is perpendicuar to B-field\n\
 #  Column 8  - o2 final Omega U\n\
 #  Column 9  - o3 final Omega V\n\
 #  Column 10 - magnetic colatitude of emission point [degrees]\n\
 #  Column 11 - zenith angle [degrees]\n\
-#  Column 12 - azimuth angle relative to local B-field [degrees]\n\
+#  Column 12 - azimuth angle relative to local B-field [degrees], 0 to 180\n\
 #  Column 13 - initial intensity in X mode\n\
 #  Column 14 - initial intensity in O mode\n\
 #  Column 15 - final intensity in Q [relative to projected magnetic moment]\n");
