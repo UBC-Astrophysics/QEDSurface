@@ -18,20 +18,21 @@ It accounts for light bending and gravitational redshift
 in the Schwarzschild metric even if the radius is less than the
 photon orbit.
 
-  Format:
+```
+Format:
 
-     pfield _mu_ _nu_ _mass_ _radius_ _alpha_ [optional parameters]
- 
-   _mu_     magnetic dipole moment in G cm^3
-   _nu_     photon frequency in Hz [observer's frame]
-   _mass_   mass in cm, i.e. GM/c^2
-   _radius_ radius in cm
-   _alpha_  angle of magnetic moment with line of sight in degrees
- 
-   [optional parameters]
- 
-            --doall   calculate for the top and bottom of the image
-                      (for non-symmetric fields)
-            --nb      number of impact parameters to calculate (10)
-            optional spectral models to use
+   pfield _mu_ _nu_ _mass_ _radius_ _alpha_ [optional parameters]
 
+ _mu_     magnetic dipole moment in G cm^3
+ _nu_     photon frequency in Hz [observer's frame]
+ _mass_   mass in cm, i.e. GM/c^2
+ _radius_ radius in cm
+ _alpha_  angle of magnetic moment with line of sight in degrees
+
+ [optional parameters]
+
+          --doall   calculate for the top and bottom of the image
+                    (for non-symmetric fields)
+          --nb      number of impact parameters to calculate (10)
+          optional spectral models to use
+```
