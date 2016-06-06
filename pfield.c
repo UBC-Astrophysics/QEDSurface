@@ -171,32 +171,34 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
       beta=(j+0.5)*step;
       integrate_path(omega0,mass,radius0,b,alpha,beta,s,0);
 #pragma omp critical (output)
-      printf("%8.5g %8.6f",b,beta);
-      for (i=S1;i<=S3;i++) {
-	printf(" %8.5f",s[i]);
+      {
+	printf("%8.5g %8.6f",b,beta);
+	for (i=S1;i<=S3;i++) {
+	  printf(" %8.5f",s[i]);
+	}
+	printf(" %8.5g",magomega_g);
+	qtot=0;
+	for (i=1;i<=3;i++) {
+	  printf(" %8.5f",omega_g[i]);
+	  qtot-=omega_g[i]*s[i];
+	}
+	
+	/* correct the value of rdotm so that the Newtonian calculation
+	   of the angle of the field to the normal will yield the GR value */
+	rdotm_newtonian=rdotm_start;  
+	
+	printf(" %8.4f %8.4f %8.4f",args[0]=acos(rdotm_newtonian)*180.0/PI,asin(x)*180.0/PI,
+	       args[2]=azimuth_start*180.0/PI);
+	if (models_loaded) {
+	  if (args[0]>90) args[0]=180-args[0];
+	  args[1]=x;
+	  evaltree(&parent_node,args,4, res);
+	  res[2]=exp(res[2]);
+	  res[3]=exp(res[3]);
+	}
+	printf(" %10.4e %10.4e %10.4e %10.4e\n",res[2],res[3],qtot,s[OMDL]);
       }
-      printf(" %8.5g",magomega_g);
-      qtot=0;
-      for (i=1;i<=3;i++) {
-	printf(" %8.5f",omega_g[i]);
-	qtot-=omega_g[i]*s[i];
-      }
-      
-      /* correct the value of rdotm so that the Newtonian calculation
-	 of the angle of the field to the normal will yield the GR value */
-      rdotm_newtonian=rdotm_start;  
-      
-      printf(" %8.4f %8.4f %8.4f",args[0]=acos(rdotm_newtonian)*180.0/PI,asin(x)*180.0/PI,
-	     args[2]=azimuth_start*180.0/PI);
-      if (models_loaded) {
-	if (args[0]>90) args[0]=180-args[0];
-	args[1]=x;
-	evaltree(&parent_node,args,4, res);
-	res[2]=exp(res[2]);
-	res[3]=exp(res[3]);
-      }
-      printf(" %10.4e %10.4e %10.4e %10.4e\n",res[2],res[3],qtot,s[OMDL]);
-    }     
+    }
   }
   return(0);
 }
