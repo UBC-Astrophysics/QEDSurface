@@ -1,5 +1,8 @@
 # QEDSurface
 
+This parallel branch is buggy ... so don't use it.  It isn't any
+faster.
+
 pfield will calculate the outgoing intensity in Stokes's Q using
 projection of the star's the magnetic moment into the plane of
 the sky as the reference direction under the assumption that at
