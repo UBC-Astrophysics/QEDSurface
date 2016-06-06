@@ -78,3 +78,6 @@ Format:
           --nb      number of impact parameters to calculate (10)
           optional spectral models to use
 ```
+
+The format of the spectral model files is particular to a neutron-star atmosphere 
+code developed by Don Lloyd.  If you are interested, I can give you further details.
