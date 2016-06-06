@@ -6,6 +6,8 @@
 #include "models.h"
 #define STEPFRAC 24
 
+extern double rdotm_start, azimuth_start;
+extern double omega_g[4], magomega_g;
 
 int
 main(int argc, char *argv[])
@@ -17,8 +19,6 @@ main(int argc, char *argv[])
   double s[NVAR+1];
   double B0, nu, k0, omega0, rinf, radius0, mass; 
   double x, b, alpha, beta, step, xmax, bstep;
-  extern double rdotm_start, azimuth_start;
-  extern double omega_g[4], magomega_g;
 #pragma omp threadprivate(rdotm_start, azimuth_start, omega_g, magomega_g)
   double rdotm_newtonian, rdotb2, f, psi, f2, psi2, qtot;
   
