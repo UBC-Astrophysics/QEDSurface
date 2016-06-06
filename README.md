@@ -42,8 +42,8 @@ Format:
 
  _mu_     magnetic dipole moment in G cm^3
  _nu_     photon frequency in Hz [observer's frame]
- _mass_   mass in cm, i.e. GM/c^2
- _radius_ radius in cm
+ _mass_   mass of star in cm, i.e. GM/c^2
+ _radius_ radius of star in cm
  _alpha_  angle of magnetic moment with line of sight in degrees
 
  [optional parameters]

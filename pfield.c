@@ -29,8 +29,8 @@ Format:\n\n\
    pfield _mu_ _nu_ _mass_ _radius_ _alpha_ [optional parameters]\n\n\
 _mu_     magnetic dipole moment in G cm^3\n\
 _nu_     photon frequency in Hz [observer's frame]\n\
-_mass_   mass in cm, i.e. GM/c^2\n\
-_radius_ radius in cm\n\
+_mass_   mass of star in cm, i.e. GM/c^2\n\
+_radius_ radius of star in cm\n\
 _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
 [optional parameters]\n\n\
          --doall   calculate for the top and bottom of the image\n\
