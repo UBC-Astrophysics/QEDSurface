@@ -35,6 +35,17 @@ of a centred dipole correctly.  If you examine the file
 `calc_derivs.c`, you can see that you can also specify an offset
 dipole or quadrupole field too (no relativity here though).
 
+As an example, the file out18wd_30 contains the output for
+nu=10<sup>18</sup>Hz and mu=10<sup>35</sup> G cm<sup>3</sup>, an
+magnetized white dwarf, with the angle of 30 degrees between the
+magnetic axis and the line of sight.  The output of the plotting
+program plotsurfacemap.py for this case is given below where we
+have indicated the meaning of the angle &beta; and the impact parameter
+b.
+
+!(out18wd_30_annotated.png)
+
+
 ```
 Format:
 
