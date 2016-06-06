@@ -1,5 +1,6 @@
-extern double **d,*x;	/* defined in BSSTEP */
 
+extern double **d,*x;	/* defined in BSSTEP */
+#pragma omp threadprivate(d,x)
 void rzextr(iest,xest,yest,yz,dy,nv,nuse)
 int iest,nv,nuse;
 double xest,yest[],yz[],dy[];
