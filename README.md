@@ -20,7 +20,7 @@ this calculation are that the value of omega is limited to a maximum
 value to allow the integration to proceed in a reasonable time, so the
 extent of depolarization is in princple a lower limit.  On the other
 hand, the magnitude of omega is determined using the weak-field limit,
-so if the surface field exceeds BQED, the formula isn't strictly
+so if the surface field exceeds B<sub>QED</sub>, the formula isn't strictly
 correct. The value of omega achieved is probably larger than the
 maximum value anyhow, so again the final column is a lower limit.
 
@@ -44,6 +44,19 @@ have indicated the meaning of the angle &beta; and the impact parameter
 b.
 
 ![surface image](out18wd_30_annotated.png)
+
+Here a sketch of the geometry from the side.  The impact parameter is
+the distance between the path of the photon far away from the star
+and the line of sight from the observer to the centre of the star.  Because
+of gravitational lensing it is generally larger than the distance between
+the line of sight and where the photon is actually emitted.
+
+![geometry](geometry.png)
+
+The program outputs the value of R<sub>inf</sub> in the header for your information and
+also something called x<sub>max</sub> which is the ratio of b<sub>max</sub> to
+R<sub>inf</sub>.  This is one unless the stellar surface lies at a smaller radius
+than the photon orbit, i.e. R &lt; 3M, a really extreme object.
 
 
 ```
