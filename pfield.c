@@ -170,7 +170,6 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
     for (j=0;j<angfactor*nstep;j++) {
       beta=(j+0.5)*step;
       integrate_path(omega0,mass,radius0,b,alpha,beta,s,0);
-#pragma omp section {
 #pragma omp critical (output)
       printf("%8.5g %8.6f",b,beta);
       for (i=S1;i<=S3;i++) {
@@ -198,8 +197,6 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
       }
       printf(" %10.4e %10.4e %10.4e %10.4e\n",res[2],res[3],qtot,s[OMDL]);
     }     
-    }
- 
   }
   return(0);
 }
