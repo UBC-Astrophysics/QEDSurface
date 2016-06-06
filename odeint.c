@@ -17,9 +17,9 @@
    free_vector(yscal,1,nvar);						\
    return;
 
-#pragma omp threadprivate(kmax,kount,xp,yp,dxsav)
 int kmax=0,kount=0;  /* defining declaration */
 double *xp=0,**yp=0,dxsav=0;  /* defining declaration */
+#pragma omp threadprivate(kmax,kount,xp,yp,dxsav)
 
 void odeint(ystart,nvar,x1,x2,eps,h1,hmin,nok,nbad,derivs,rkqc)
 double ystart[],x1,x2,eps,h1,hmin;

@@ -1,8 +1,8 @@
 #include <math.h>
 #include "polar.h"
 
-#pragma omp threadprivate(a2, x2)
 double a2, x2;
+#pragma omp threadprivate(a2, x2)
 
 void
 phix_derivs(double u, double s[], double ds[]) {
