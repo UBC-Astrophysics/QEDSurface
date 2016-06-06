@@ -9,7 +9,7 @@ CFLAGS = -O2
 #
 # If you have OpenMP support in the compiler, uncomment the following line
 #
-# FOPENMP = -fopenmp
+FOPENMP = -fopenmp
 #
 #
 CFLAGS += $(FOPENMP)
