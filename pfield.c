@@ -6,8 +6,6 @@
 #include "models.h"
 #define STEPFRAC 24
 
-extern double rdotm_start, azimuth_start;
-extern double omega_g[4], magomega_g;
 
 int
 main(int argc, char *argv[])
@@ -19,6 +17,8 @@ main(int argc, char *argv[])
   double s[NVAR+1];
   double B0, nu, k0, omega0, rinf, radius0, mass; 
   double x, b, alpha, beta, step, xmax, bstep;
+  extern double rdotm_start, azimuth_start;
+  extern double omega_g[4], magomega_g;
 #pragma omp threadprivate(rdotm_start, azimuth_start, omega_g, magomega_g)
   double rdotm_newtonian, rdotb2, f, psi, f2, psi2, qtot;
   
@@ -170,6 +170,8 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
     for (j=0;j<angfactor*nstep;j++) {
       beta=(j+0.5)*step;
       integrate_path(omega0,mass,radius0,b,alpha,beta,s,0);
+#pragma omp section {
+#pragma omp critical (output)
       printf("%8.5g %8.6f",b,beta);
       for (i=S1;i<=S3;i++) {
 	printf(" %8.5f",s[i]);
@@ -195,8 +197,9 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
 	res[3]=exp(res[3]);
       }
       printf(" %10.4e %10.4e %10.4e %10.4e\n",res[2],res[3],qtot,s[OMDL]);
-      
+    }     
     }
+ 
   }
   return(0);
 }
