@@ -56,5 +56,4 @@ void odeint(double ystart[], int nvar, double x1, double x2,
 			   double [], double *, double *, void (*)(double, double [], double [])));
 #endif
 
-double qromb(double (*)(double), double, double);
 /* double atof(char *); */
