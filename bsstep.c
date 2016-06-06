@@ -5,8 +5,8 @@
 #define SHRINK 0.95
 #define GROW 1.2
 
-#pragma omp threadprivate(d, x)
 double **d=0,*x=0;	/* defining declaration */
+#pragma omp threadprivate(d, x)
 
 void bsstep(y,dydx,nv,xx,htry,eps,yscal,hdid,hnext,derivs)
 double y[],dydx[],*xx,htry,eps,yscal[],*hdid,*hnext;
