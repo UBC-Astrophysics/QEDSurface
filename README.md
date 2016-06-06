@@ -1,6 +1,6 @@
 # QEDSurface
 
-This parallel branch is buggy ... so don't use it.  It isn't any
+This parallel branch is buggy ... so don't use it.  It isn't much
 faster.
 
 pfield will calculate the outgoing intensity in Stokes's Q using
