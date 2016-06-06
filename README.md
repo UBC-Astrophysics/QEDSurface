@@ -58,6 +58,7 @@ also something called x<sub>max</sub> which is the ratio of b<sub>max</sub> to
 R<sub>inf</sub>.  This is one unless the stellar surface lies at a smaller radius
 than the photon orbit, i.e. R &lt; 3M, a really extreme object.
 
+Here is the help that pfield outputs if you don't type any parameters.
 
 ```
 Format:
