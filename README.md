@@ -43,7 +43,7 @@ program plotsurfacemap.py for this case is given below where we
 have indicated the meaning of the angle &beta; and the impact parameter
 b.
 
-!(out18wd_30_annotated.png)
+![surface image](out18wd_30_annotated.png)
 
 
 ```
