@@ -43,6 +43,7 @@ integrate_path(double omega0_p, double mass_p,
   double ds[NVAR+1];
   double lam, lamstep, lamoutput, lamstop;
   extern double rdotm_global, azimuth_global;
+#pragma omp threadprivate(rdotm_global, azimuth_global)
   int nok, nbad, stepcnt;
 
   omega0=omega0_p;  mass=mass_p;  radius0=radius0_p; b=b_p;
