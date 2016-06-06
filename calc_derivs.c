@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "polar.h"
 
+
+#pragma omp threadprivate(mass, b, cosbeta, sinbeta, m, q, bigq, radius0, deltahat, delta, omega_g, magomega_g, omega0, omega_soft, azimuth_global, rdotm_global)
 double mass, b;
 double cosbeta=0.6, sinbeta=0.8;
 /* bigq=2/3 yields a quadrapole with B^2 at its pole and equator    */

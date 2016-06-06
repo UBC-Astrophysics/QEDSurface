@@ -9,6 +9,8 @@ extern double cosbeta, sinbeta;
 /* flat spacetime limit) */
 extern double m[4], radius0;
 extern double omega_g[4], magomega_g, omega0, omega_soft;
+
+#pragma omp threadprivate(rdotm_start, azimuth_start)
 double rdotm_start;
 double azimuth_start;
 

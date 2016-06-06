@@ -1,5 +1,7 @@
 #include <math.h>
 #include "polar.h"
+
+#pragma omp threadprivate(a2, x2)
 double a2, x2;
 
 void
