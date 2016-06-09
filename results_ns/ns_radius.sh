@@ -8,6 +8,6 @@ do
 	    @"(if \$5==${ang} && \$4==1.2e6 then \$2 else 0.0/0.0 end):-\$6/\$7" \
 	    --legend '14 km' \
 	    @"(if \$5==30 && \$4==1.4e6 then \$2 else 0.0/0.0 end):-\$6/\$7" \
-	    -x 'Energy [keV]' -y "Polarized Fraction (${ang} degrees)"
+	    -x 'Energy [keV]' -y "Polarized Fraction at ${ang} degrees"
 done
 
