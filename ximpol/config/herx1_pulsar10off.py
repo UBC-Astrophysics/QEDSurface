@@ -32,22 +32,28 @@ import scipy.interpolate
 from scipy.optimize import curve_fit
 import os
 
-from ximpol import XIMPOL_CONFIG
-from ximpol.core.rand import xUnivariateGenerator
-from ximpol.core.spline import xInterpolatedUnivariateSpline
-from ximpol.srcmodel.roi import xPeriodicPointSource, xEphemeris, xROIModel
-from ximpol.srcmodel.spectrum import power_law
-
+try: 
+    from ximpol import XIMPOL_CONFIG
+    from ximpol.core.rand import xUnivariateGenerator
+    from ximpol.core.spline import xInterpolatedUnivariateSpline
+    from ximpol.srcmodel.roi import xPeriodicPointSource, xEphemeris, xROIModel
+    from ximpol.srcmodel.spectrum import power_law
+    ximpol_loaded=True
+except ImportError:
+    ximpol_loaded=False
 
 def _full_path(file_name):
     """Convenience function to retrieve the relevant files.
     """
-    return os.path.join(XIMPOL_CONFIG, 'ascii', file_name)
+    if ximpol_loaded:
+        return os.path.join(XIMPOL_CONFIG, 'ascii', file_name)
+    else:
+        return os.path.join('..', 'ascii', file_name)
 
 # Grab all the relevant files.
 
 # radius angle energy phot_flux (x-o)/(x+o)
-# rad, inclination, energy, phot_flux, ratio = numpy.loadtxt(_full_path("10qedon.txt"),usecols=range(5),
+# rad, inclination, energy, phot_flux, ratio = numpy.loadtxt(_full_path("10qedoff.txt"),usecols=range(5),
 #unpack=True)
 
 dtype=[('incl',float),('ener',float),('flux',float),('ratio',float)]
@@ -97,36 +103,38 @@ def polarization_angle(E, t, ra, dec):
 def energy_spectrum(E,t):
     return energy_spectrum_inclination(E,inclination(t))
 
-# Build the PL normalization as a function of the phase.
-fmt = dict(xname='Pulsar phase', yname='Flux',
-           yunits='keV cm$^{-2}$ s$^{-1}$')
+if ximpol_loaded:
+    
+    # Build the PL normalization as a function of the phase.
+    fmt = dict(xname='Pulsar phase', yname='Flux',
+               yunits='keV cm$^{-2}$ s$^{-1}$')
 
-_phi=numpy.linspace(0,1,23)
-enbin=numpy.linspace(2,10,100)
-esum=_phi*0
-for ii,pp in enumerate(_phi):
-    esum[ii]=numpy.trapz(energy_spectrum(enbin,pp),x=enbin)
-pl_normalization_spline = xInterpolatedUnivariateSpline(_phi, esum, k=3, **fmt)
+    _phi=numpy.linspace(0,1,23)
+    enbin=numpy.linspace(2,10,100)
+    esum=_phi*0
+    for ii,pp in enumerate(_phi):
+        esum[ii]=numpy.trapz(energy_spectrum(enbin,pp),x=enbin)
 
+    pl_normalization_spline = xInterpolatedUnivariateSpline(_phi, esum, k=3, **fmt)
 
-# Build the polarization angle as a function of the phase.
-_pol_angle = polarization_angle(0,_phi,0,0)
-fmt = dict(xname='Pulsar phase', yname='Polarization angle [rad]')
-pol_angle_spline = xInterpolatedUnivariateSpline(_phi, _pol_angle, k=1, **fmt)
-
-
-# Build the polarization degree as a function of the phase.
-_pol_degree = polarization_degree(0,_phi,0,0)
-fmt = dict(xname='Pulsar phase', yname='Polarization degree')
-pol_degree_spline = xInterpolatedUnivariateSpline(_phi, _pol_degree, k=1, **fmt)
+    # Build the polarization angle as a function of the phase.
+    _pol_angle = polarization_angle(0,_phi,0,0)
+    fmt = dict(xname='Pulsar phase', yname='Polarization angle [rad]')
+    pol_angle_spline = xInterpolatedUnivariateSpline(_phi, _pol_angle, k=1, **fmt)
 
 
-ROI_MODEL = xROIModel(254.457625,  35.3423888889)
-herx1_ephemeris = xEphemeris(0., 0.8064516129,  0, 0)
-herx1_pulsar = xPeriodicPointSource('Her X-1', ROI_MODEL.ra, ROI_MODEL.dec,
-                                    energy_spectrum, polarization_degree,
-                                    polarization_angle, herx1_ephemeris)
-ROI_MODEL.add_source(herx1_pulsar)
+    # Build the polarization degree as a function of the phase.
+    _pol_degree = polarization_degree(0,_phi,0,0)
+    fmt = dict(xname='Pulsar phase', yname='Polarization degree')
+    pol_degree_spline = xInterpolatedUnivariateSpline(_phi, _pol_degree, k=1, **fmt)
+
+
+    ROI_MODEL = xROIModel(254.457625,  35.3423888889)
+    herx1_ephemeris = xEphemeris(0., 0.8064516129,  0, 0)
+    herx1_pulsar = xPeriodicPointSource('Her X-1', ROI_MODEL.ra, ROI_MODEL.dec,
+                                        energy_spectrum, polarization_degree,
+                                        polarization_angle, herx1_ephemeris)
+    ROI_MODEL.add_source(herx1_pulsar)
 
 
 if __name__ == '__main__':
