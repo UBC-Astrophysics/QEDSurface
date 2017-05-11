@@ -6,7 +6,7 @@ the sky as the reference direction under the assumption that at
 the point of emission the intensity is entirely in the X mode
 with unit value.
 
-It spaces the image evenly so that one can calculate the total
+It samples the image evenly so that one can calculate the total
 polarized flux by simply summing the product of resulting Q values
 with the (X-O) intensity at the point of emission.  If your model
 has emission with other polarizations (e.g. horizontal/vertical),
