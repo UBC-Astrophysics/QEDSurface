@@ -1,6 +1,8 @@
 # Total intensity (both polarization) with the peak normalized to 5
 # so this only gives the angular dependence and you have to use the
 # total flux at the energy to renormalize it
+# anything negative should be zeroed
+# slab model
 #   Angle       I(1keV)   I(2keV)    I(5keV)   I(10keV)   I(15keV)   I(30keV)
   0.000000   0.202742   0.362829   2.681318   5.027906   4.986925   5.010003
   1.000000   0.252099   0.328165   2.476060   5.027906   4.986925   5.010003
