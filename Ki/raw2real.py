@@ -3,7 +3,7 @@ import sys
 
 from scipy.interpolate import interp1d
 
-ang, lpol = np.loadtxt(sys.argv[1],unpack=True)
+ang, lpol = np.loadtxt(sys.argv[1],unpack=True,delimiter=',')
 
 enindex=(np.floor(ang/100)).astype(int)
 angtrue=ang-enindex*100
