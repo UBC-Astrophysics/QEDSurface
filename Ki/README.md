@@ -1,5 +1,9 @@
 Here are some plots and data from http://adsabs.harvard.edu/abs/1987PASJ...39..781K
 
+The total intensities haven't been normalized in any reasonable way, so we would use the total flux from another model (Meszaros) to get normalize the intensities.  The new element here is that with the Ki model we have the polarization degree as a function of angle, whereas in Meszaros we only had the total polarization degree.
+
+We can use the Meszaros flux, use the Ki intensities and then the Q/I to get the polarized intensity in any direction and energy for input into the code that sums over the star.
+
 Figure 4a (data in [linear polarization](Fig4a-top.dat) and [total intensity](Fig4a-bottom-total.dat)):
 
 ![Figure 4a from Ki](Ki-4a.png)
