@@ -1,10 +1,10 @@
 Here are some plots and data from http://adsabs.harvard.edu/abs/1987PASJ...39..781K
 
-Figure 4a (data in [linear polarization](Fig4a-top.dat) and [total intensity](Fig4a-bottom.dat)):
+Figure 4a (data in [linear polarization](Fig4a-top.dat) and [total intensity](Fig4a-bottom-total.dat)):
 
 ![Figure 4a from Ki](Ki-4a.png)
 
-Figure 4b (data in [linear polarization](Fig4b-top.dat) and [total intensity](Fig4b-bottom.dat)):
+Figure 4b (data in [linear polarization](Fig4b-top.dat) and [total intensity](Fig4b-bottom-total.dat)):
 :
 
 ![Figure 4b from Ki](Ki-4b.png)
