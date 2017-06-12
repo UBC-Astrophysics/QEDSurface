@@ -1,6 +1,7 @@
 # Total intensity (both polarizations) with the peak normalized to 5
 # so this only gives the angular dependence and you have to use the
 # total flux at the energy to renormalize it
+# anything negative should be zeroed
 # cylinder accretion column model
 #   Angle       I(1keV)   I(2keV)    I(5keV)   I(10keV)   I(15keV)   I(30keV)
   0.000000   0.000000   0.000000   0.000000   0.000000   0.000000   0.000000
