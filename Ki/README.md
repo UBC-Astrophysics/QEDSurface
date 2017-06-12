@@ -1,6 +1,10 @@
 Here are some plots and data from http://adsabs.harvard.edu/abs/1987PASJ...39..781K
 
+Figure 4a:
+
 ![Figure 4a from Ki](Ki-4a.png)
+
+Figure 4b:
 
 ![Figure 4b from Ki](Ki-4b.png)
 
