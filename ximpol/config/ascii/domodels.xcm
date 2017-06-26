@@ -1,0 +1,73 @@
+setplot device /XWINDOW
+model tbabs*(nthcomp+powerlaw)
+0.65
+4.81
+13.5
+0.344
+0
+0
+6.8e-2
+0.65
+0.9e-4
+plot emodel
+iplot
+wdata model02.dat
+exit
+model tbabs*(nthcomp+powerlaw)
+0.65
+4.75
+4.8
+0.344
+0
+0
+6.4e-2
+0.79
+1.4e-4
+plot emodel
+iplot
+wdata model24.dat
+exit
+model tbabs*(nthcomp+powerlaw)
+0.65
+4.89
+10.5
+0.340
+0
+0
+6.0e-2
+0.75
+1.0e-4
+plot emodel
+iplot
+wdata model46.dat
+exit
+model tbabs*(nthcomp+powerlaw)
+0.65
+4.98
+6.7
+0.338
+0
+0
+6.8e-2
+0.71
+0.9e-4
+plot emodel
+iplot
+wdata model68.dat
+exit
+model tbabs*(nthcomp+powerlaw)
+0.65
+4.94
+6.8
+0.346
+0
+0
+6.4e-2
+0.78
+1.0e-4
+plot emodel
+iplot
+wdata model80.dat
+exit
+exit
+
