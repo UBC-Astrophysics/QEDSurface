@@ -53,11 +53,11 @@ def _full_path(file_name):
 # Grab all the relevant files.
 
 # radius angle energy phot_flux (x-o)/(x+o)
-# rad, inclination, energy, phot_flux, ratio = numpy.loadtxt(_full_path("12qedoff.txt"),usecols=range(5),
+# rad, inclination, energy, phot_flux, ratio = numpy.loadtxt(_full_path("1.2e+06_kii_qedon.txt"),usecols=range(5),
 #unpack=True)
 
 dtype=[('incl',float),('ener',float),('flux',float),('ratio',float)]
-arr=numpy.loadtxt(_full_path("12qedoff.txt"),usecols=(1,2,3,4),dtype=dtype)
+arr=numpy.loadtxt(_full_path("1.2e+06_kii_qedon.txt"),usecols=(1,2,3,4),dtype=dtype)
 arr=numpy.sort(arr,order=('ener','incl'))
 inclination=arr['incl']
 energy=arr['ener']

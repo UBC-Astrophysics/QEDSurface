@@ -48,7 +48,7 @@ def _full_path(file_name):
     if ximpol_loaded:
         return os.path.join(XIMPOL_CONFIG, 'ascii', file_name)
     else:
-        return os.path.join('..', 'ascii', file_name)
+        return os.path.join('.', 'ascii', file_name)
 
 # Grab all the relevant files.
 
