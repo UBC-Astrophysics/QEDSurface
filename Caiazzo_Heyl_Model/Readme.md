@@ -1,3 +1,7 @@
+# Model Files
+
+The four model files above correspond to the short and long-column and the one and two-column models presented in the following two papers.  The first column contains the angle between the line of sight and the magnetic axis.  The value of Q is defined such that polarization along the direction of the magnetic field projected into the plane of the sky is positive.   Polarization in the perpendicular direction is negative.  The values of U and V vanish due to vacuum birefringence.
+
 # [Polarisation of Accreting X-ray Pulsars. I. A New Model](./X_ray_pulsars_polarization(1).pdf)
 
 ## Ilaria Caiazzo, Jeremy Heyl
