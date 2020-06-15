@@ -1,3 +1,7 @@
+# X-ray Polarization from Accretion Columns
+
+We present the results of our calculations for the X-ray polarization from accretion columns outlined in our two papers.  These include QED and GR in the propagation of the radiation to the observer, and the Becker-Wolff model for the accretion column itself.
+
 # Model Files
 
 The four model files above correspond to the short (1 km) and long-column (7 km) and the one and two-column models presented in the following two papers.  The first column of each file contains the angle between the line of sight and the magnetic axis.  The value of Q is defined such that polarization along the direction of the magnetic field projected into the plane of the sky is positive.   Polarization in the perpendicular direction is negative.  The values of U and V vanish due to vacuum birefringence.  The parameters for the underlying B&W model are to fit the phase-averaged spectrum of Her X-1.  To use the intensity information in these files, first for the selected geometry calculate the phase-averaged spectrum as a function of energy from the files and renormalize all of the intensities to fit the observed phase-averaged spectrum.
