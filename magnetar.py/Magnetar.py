@@ -1009,7 +1009,7 @@ class pfield:
         self.iint=[]
         self.qint=[]
         for en in ebins:
-            self.recalculate(en,allsurface,gtt=gtt)
+            self.recalculate(en,surfacemodel,gtt=gtt)
         self.iint.append(self.imean)
         self.qint.append(self.qmean)
         self.iint=np.array(self.iint)
