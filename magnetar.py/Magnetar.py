@@ -1002,14 +1002,14 @@ class pfield:
         self.qmean = np.mean(-dotprod * qq) * gtt**3
         return self.imean, self.qmean
 
-    def calcvalues(self,surfacemodel,ebins=None):
+    def calcvalues(self,surfacemodel,ebins=None,gtt=1):
         if ebins is None:
             ebins=np.logspace(-0.5,1.5,100)
         self.ebins=ebins
         self.iint=[]
         self.qint=[]
         for en in ebins:
-            pfi[i].recalculate(en,allsurface,gtt=(1-2*2.0/10.0)**0.5)
+            self.recalculate(en,allsurface,gtt=gtt)
         self.iint.append(self.imean)
         self.qint.append(self.qmean)
         self.iint=np.array(self.iint)
@@ -1116,7 +1116,7 @@ class pfield:
 class pfield_array:
     def loadbunch(self,filespec):
         self.mufil,self.pfi = [],[]
-        for i in glob.glob('Sample_Pfields/pfield_models_QED/*'):
+        for i in glob.glob(filespec):
             pfii= pfield()
             pfii.loaddata(i)
             pfi.append(pfii)
@@ -1124,9 +1124,9 @@ class pfield_array:
         ind = np.argsort(mufil)
         mufil = [mufil[i] for i in ind]
         pfi = [pfi[i] for i in ind]
-    def calcvalues(self,surfacemodel,ebins=None):
+    def calcvalues(self,surfacemodel,ebins=None,gtt=1):
         for pf in pfi:
-            pf.calcvalues(surfacemodel,ebins)
+            pf.calcvalues(surfacemodel,ebins,gtt=1)
             
     def loadfiles(self,dirpath):
         import os
