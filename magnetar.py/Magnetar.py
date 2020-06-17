@@ -912,7 +912,11 @@ class pfield:
         self.angkb = []
         self.ndotb = []
         self.pt = 1
-        #self.oneSided=True
+        self.filename = ""
+        self.ebins=[]
+        self.iint=[]
+        self.qint=[]        
+        self.oneSided=True
 
     def loaddata(self, pfield_file):
         with open(pfield_file, 'r') as f:
@@ -939,6 +943,7 @@ class pfield:
                        (1 - self.ndotb**2)**0.5 * np.sin(
                            np.radians(self.data['theta'])) * np.cos(
                                np.radians(self.data['phi'])))))
+        self.filename=pfield_file
         return self
 
     def calcIQ(self, energies, atmo_map):
@@ -1114,6 +1119,8 @@ class pfield:
         return fig
 
 class pfield_array:
+    def __init__(self):
+        self.mufil,self.pfi = [],[]
     def loaddata(self, files, modeltype=None):
         self.mufil,self.pfi = [],[]
         if type(files) is str:
