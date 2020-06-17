@@ -1136,7 +1136,7 @@ class pfield_array:
         self.mufil = [self.mufil[i] for i in ind]
         self.pfi = [self.pfi[i] for i in ind]
     def calcvalues(self,surfacemodel,ebins=None,gtt=1):
-        for pf in pfi:
+        for pf in self.pfi:
             pf.calcvalues(surfacemodel,ebins,gtt=1)
             
     def loadfiles(self,dirpath):
