@@ -1114,9 +1114,13 @@ class pfield:
         return fig
 
 class pfield_array:
-    def loadbunch(self,filespec):
+    def loaddata(self, files, modeltype=None):
         self.mufil,self.pfi = [],[]
-        for i in glob.glob(filespec):
+        if type(files) is str:
+            files = [
+                files,
+            ]
+        for i in files:
             pfii= pfield()
             pfii.loaddata(i)
             pfi.append(pfii)
