@@ -1123,11 +1123,11 @@ class pfield_array:
         for i in files:
             pfii= pfield()
             pfii.loaddata(i)
-            pfi.append(pfii)
-            mufil.append(float(i.rsplit('_',1)[-1][:2]))
-        ind = np.argsort(mufil)
-        mufil = [mufil[i] for i in ind]
-        pfi = [pfi[i] for i in ind]
+            self.pfi.append(pfii)
+            self.mufil.append(float(i.rsplit('_',1)[-1][:2]))
+        ind = np.argsort(self.mufil)
+        self.mufil = [self.mufil[i] for i in ind]
+        self.pfi = [self.pfi[i] for i in ind]
     def calcvalues(self,surfacemodel,ebins=None,gtt=1):
         for pf in pfi:
             pf.calcvalues(surfacemodel,ebins,gtt=1)
