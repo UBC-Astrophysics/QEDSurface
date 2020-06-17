@@ -1,0 +1,149 @@
+# run initiated by 636f9d5517fa4cc0bb9cec4e36690581 atTue Jul 30 18:05:53 2019
+# run initiated with command: ./atm -o 63.256_coscolat0.45 -s 56.633_coscolat0.55 -B 13.912045495134148 -T 6.385788058834013 -b 44.77723033846955 -m 11 -p 5 -a 1.5 -M 2 -D 5 
+#
+# atm run-time parameters are
+# 
+#  -o  output file base name                    63.256_coscolat0.45
+#  -i  input spectral file name                 <none>
+#  -s  seed solution base file name             56.633_coscolat0.55
+# 
+#  -g  log surface gravity of star              14.384800 cm/s^2
+#  -T  log effective atmospheric temperature    6.385788 K
+#      conserved net (astrophysical) flux       6.303120e+20 ergs/cm^2
+#  -B  log magnetic field strength              13.912045 G
+#  -b  magnetic field inclination cos(theta)    0.709851
+# 
+#  -X  hydrogen mass fraction                   1.000000
+#  -Y  helium mass fraction                     0.000000
+# 
+#  -a  log E_max (keV)                          1.500
+#  -n  coarse frequency mesh points             24
+#  -m  angle (LOS-normal) mesh points           11
+#  -p  azimuthal mesh points                    5
+#      (total of 55 trajectories used)
+#  -d  minimum (surface) mass index             -5.00
+#  -D  maximum (depth) mass index               5.00
+#      logarithmic mass depth intervals         0
+#      (using 10 intervals per decade)
+# 
+#
+# gravitational redshift Z table
+# surface gravity log(g_s) = 14.384800  (g_s=2.425493e+14 cm/s^2)
+#	Z		M (M_sol)	R (km)		log(gs)
+#
+#	0.143999	0.399414	5.000000	14.384800
+#	0.305648	1.399855	10.000000	14.384800
+#	0.483637	2.771814	15.000000	14.384800
+#	0.676110	4.361810	20.000000	14.384800
+#	0.446816	2.476008	14.000000	14.384800
+#
+#	0.133613	0.350000	4.659206	14.384800
+#	0.199509	0.700000	6.777916	14.384800
+#	0.255078	1.050000	8.491324	14.384800
+#	0.305668	1.400000	10.000596	14.384800
+#	0.353325	1.750000	11.383229	14.384800
+#	0.399083	2.100000	12.678763	14.384800
+#	0.443551	2.450000	13.910558	14.384800
+#	0.487119	2.800000	15.093754	14.384800
+#
+#	0.449823	2.500000	14.082279	14.384800
+#
+# machine information:
+# Linux 879bfbccfb63 4.15.0-55-generic #60-Ubuntu SMP Tue Jul 2 18:22:20 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+#
+# pid 7533
+#
+#
+# run-time activity
+#
+LogmMeshEvenSpacedinLog     		 No
+TInterpExtendSurface        		Yes
+UseSurfaceTruncation        		 No
+UseFeaturelessMesh          		 No
+ProvideOpticalCoverage      		 No
+UseFixedLogEBounds          		Yes
+IgnoreVacuumParameter       		Yes
+IgnoreLongPolzComp          		 No
+UseProtonScattering         		 No
+UseScattering               		Yes
+UseBoundFree                		 No
+IgnoreCyclotronLines        		 No
+PureElectronPlasma          		 No
+UseGauntCorrections         		Yes
+UseGauntTDerivs             		Yes
+NegateModeCrossing          		 No
+FiniteSurfaceCorrection     		 No
+HermiteDifferencing         		 No
+PertFixUnphysicalDeltas     		 No
+PertFixLargeDeltas          		Yes
+PertFormalAfterLimitedT     		Yes
+ReportsOnCLEntry            		 No
+IncrementalReporting        		 No
+CheckContractionByFormal    		 No
+StartLucyUnsold             		 No
+SkipLargerOutputFiles       		Yes
+RejectUndefCLParms          		Yes
+UseAdaptiveMassMesh         		 No
+MagDiffusionLimit           		Yes
+UseCoulombCorrection        		Yes
+PermitOptRedist             		Yes
+UseGreyStructure            		 No
+# magnetic free-free gaunt factor tables computed in 0.55 sec
+# 
+# linearization operator size =   76088448 bytes/depth
+# linearization oper file req = 6847960320 bytes
+#
+# allocations completed at                       Tue Jul 30 18:05:53 2019
+# plasma opacities computed in 25.10 sec
+# computing formal solution from trial structure atTue Jul 30 18:06:19 2019
+computing formal transfer solution
+processing 28 energies:
+  1	1.303847e-02 keV
+  2	2.524480e-02 keV
+  3	4.426077e-02 keV
+  4	6.573583e-02 keV
+  5	8.475180e-02 keV
+  6	9.695813e-02 keV
+  7	1.409252e-01 keV
+  8	2.815751e-01 keV
+  9	4.222250e-01 keV
+ 10	4.702995e-01 keV
+ 11	4.971189e-01 keV
+ 12	5.321107e-01 keV
+ 13	5.589302e-01 keV
+ 14	6.149767e-01 keV
+ 15	7.830227e-01 keV
+ 16	9.510686e-01 keV
+ 17	1.303847e+00 keV
+ 18	2.524480e+00 keV
+ 19	4.426077e+00 keV
+ 20	6.573583e+00 keV
+ 21	8.475180e+00 keV
+ 22	9.695813e+00 keV
+ 23	1.072977e+01 keV
+ 24	1.366237e+01 keV
+ 25	1.823102e+01 keV
+ 26	2.339047e+01 keV
+ 27	2.795911e+01 keV
+ 28	3.089172e+01 keV
+# entering cl's iterative loop at                Tue Jul 30 18:06:56 2019
+# pass 1 computed in 934.59 sec                  Tue Jul 30 18:22:30 2019
+# plasma opacities computed in 25.13 sec
+# pass 2 computed in 930.82 sec                  Tue Jul 30 18:39:12 2019
+# plasma opacities computed in 25.52 sec
+# pass 3 computed in 926.42 sec                  Tue Jul 30 18:55:51 2019
+# plasma opacities computed in 25.08 sec
+# pass 4 computed in 939.68 sec                  Tue Jul 30 19:12:43 2019
+# plasma opacities computed in 25.61 sec
+# pass 5 computed in 940.76 sec                  Tue Jul 30 19:29:44 2019
+# plasma opacities computed in 25.19 sec
+# pass 6 computed in 945.17 sec                  Tue Jul 30 19:46:46 2019
+# plasma opacities computed in 25.64 sec
+# pass 7 computed in 954.83 sec                  Tue Jul 30 20:04:32 2019
+# plasma opacities computed in 25.44 sec
+# pass 8 computed in 933.43 sec                  Tue Jul 30 20:22:01 2019
+# plasma opacities computed in 25.26 sec
+# computing optical depth table at               Tue Jul 30 20:22:45 2019
+# optical depth table computed in 0.01 sec       Tue Jul 30 20:22:45 2019
+# run completed at                               Tue Jul 30 20:22:45 2019
+# elapsed time is 136.87 min
