@@ -1,0 +1,24 @@
+# limiting correction value to model variables = 0.70
+#
+# scattering is fully conservative to one part per 10^(-12.000000) in pass 6
+#
+# final emergent flux error = 4.224922e-05
+# largest final flux error  = 2.585648e-04 at depth pt 89
+#
+# largest recorded corrections per iterate:
+# iter	idx(max_err)	model var
+#  1	255129 (9.52 )	u comp O od= 90 (nu=27, mu= 3, phi= 0, traj= 15)
+#  2	187717 (0.95 )	u comp O od= 66 (nu=24, mu= 9, phi= 4, traj= 49)
+#  3	176201 (-0.15)	u comp O od= 62 (nu=18, mu= 9, phi= 4, traj= 49)
+#  4	164339 (-0.07)	u comp O od= 58 (nu= 6, mu= 0, phi= 3, traj=  3)
+#  5	139034 (0.02 )	u comp O od= 49 (nu= 4, mu= 6, phi= 4, traj= 34)
+#  6	   253 (-0.01)	u comp X od=  0 (nu= 4, mu= 9, phi= 4, traj= 49)
+#
+# iter	lg(max_err)	lg(dT_err)	lg(F_err)
+ 1	 0.978485	-1.747636	 5.283805
+ 2	-0.023039	-1.982734	 4.533613
+ 3	-0.825977	-2.028180	 2.629319
+ 4	-1.169067	-3.538442	 0.645498
+ 5	-1.749146	-3.706283	-1.415630
+ 6	-2.287649	-4.096575	-3.587431
+
