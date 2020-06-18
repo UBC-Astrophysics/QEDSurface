@@ -1022,7 +1022,7 @@ class pfield:
     def __str__(self):
         outstring='# Angle[rad] Energy[keV] Intensity Q/I\n'
         for ee,ii,rr in zip(self.ebins,self.iint,self.qint/self.iint):
-            outstring='%s%g %g %g %g\n' % (self.theta*np.pi/180.0,ee,ii,rr)
+            outstring='%s%g %g %g %g\n' % (outstring,self.theta*np.pi/180.0,ee,ii,rr)
         return outstring
         
     def plot(self,
