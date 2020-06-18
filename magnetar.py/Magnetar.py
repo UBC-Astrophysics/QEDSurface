@@ -1020,9 +1020,9 @@ class pfield:
         self.iint=np.array(self.iint)
         self.qint=np.array(self.qint)
     def __str__(self):
-        outstring='# Angle[rad] Energy[keV] Intensity Q/I\n'
+        outstring='# Phi[rad]             Energy[keV]    I             Q/I\n'
         for ee,ii,rr in zip(self.ebins,self.iint,self.qint/self.iint):
-            outstring='%s%g %g %g %g\n' % (outstring,self.theta*np.pi/180.0,ee,ii,rr)
+            outstring='%s%12g %12g %12g %12g\n' % (outstring,self.theta*np.pi/180.0,ee,ii,rr)
         return outstring
         
     def plot(self,
@@ -1143,6 +1143,11 @@ class pfield_array:
     def calcvalues(self,surfacemodel,ebins=None,gtt=1):
         for pf in self.pfi:
             pf.calcvalues(surfacemodel,ebins,gtt=1)
+    def __str__(self):
+        outstring=''
+        for pf in self.pfi:
+            outstring=outstring+str(pf)
+        return outstring
     def recalculate(self,energy,surfacemodel,gtt=1):
         for pf in self.pfi:
             pf.recalculate(energy,surfacemodel,gtt=gtt)
