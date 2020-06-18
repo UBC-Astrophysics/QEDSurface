@@ -1019,7 +1019,12 @@ class pfield:
             self.qint.append(self.qmean)
         self.iint=np.array(self.iint)
         self.qint=np.array(self.qint)
-
+    def __str__(self):
+        outstring='# Angle[rad] Energy[keV] Intensity Q/I\n'
+        for ee,ii,rr in zip(self.ebins,self.iint,self.qint/self.iint):
+            outstring='%s%g %g %g %g\n' % (self.theta*np.Pi/180.0,ee,ii,rr)
+        return outstring
+        
     def plot(self,
              maxrings=15,
              size=0.08,
