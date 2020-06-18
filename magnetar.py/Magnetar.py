@@ -1020,7 +1020,7 @@ class pfield:
         self.iint=np.array(self.iint)
         self.qint=np.array(self.qint)
     def __str__(self):
-        outstring='# Phi[rad]             Energy[keV]    I             Q/I\n'
+        outstring='#   Phi[rad]  Energy[keV]            I          Q/I\n'
         for ee,ii,rr in zip(self.ebins,self.iint,self.qint/self.iint):
             outstring='%s%12g %12g %12g %12g\n' % (outstring,self.theta*np.pi/180.0,ee,ii,rr)
         return outstring
