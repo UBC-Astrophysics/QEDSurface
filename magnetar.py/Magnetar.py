@@ -1131,7 +1131,7 @@ class pfield_array:
             pfii= pfield()
             pfii.loaddata(i)
             self.pfi.append(pfii)
-            self.mufil.append(float(i.rsplit('_',1)[-1][:2]))
+            self.mufil.append(pfii.theta)
         ind = np.argsort(self.mufil)
         self.mufil = [self.mufil[i] for i in ind]
         self.pfi = [self.pfi[i] for i in ind]
