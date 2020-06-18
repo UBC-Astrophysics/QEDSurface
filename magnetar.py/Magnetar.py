@@ -1140,6 +1140,7 @@ class pfield_array:
         ind = np.argsort(self.mufil)
         self.mufil = [self.mufil[i] for i in ind]
         self.pfi = [self.pfi[i] for i in ind]
+        return self
     def calcvalues(self,surfacemodel,ebins=None,gtt=1):
         for pf in self.pfi:
             pf.calcvalues(surfacemodel,ebins,gtt=1)
