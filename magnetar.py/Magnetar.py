@@ -1010,7 +1010,7 @@ class pfield:
     def calcvalues(self,surfacemodel,ebins=None,gtt=1):
         if ebins is None:
             ebins=np.logspace(-0.5,1.5,100)
-        self.ebins=ebins
+        self.ebins=np.array(ebins)
         self.iint=[]
         self.qint=[]
         for en in ebins:
