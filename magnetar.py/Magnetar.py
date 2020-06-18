@@ -1138,7 +1138,9 @@ class pfield_array:
     def calcvalues(self,surfacemodel,ebins=None,gtt=1):
         for pf in self.pfi:
             pf.calcvalues(surfacemodel,ebins,gtt=1)
-            
+    def recalculate(self,energy,surfacemodel,gtt=1)
+        for pf in self.pfi:
+            pf.recalculate(energy,surfacemodel,gtt=gtt)
     def loadfiles(self,dirpath):
         import os
         import fnmatch
