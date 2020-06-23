@@ -58,6 +58,17 @@ normflux=1e-2 # total flux from 2-8 keV in (counts or erg)/cm2/s
 #normflux='renorm.txt' # normalize using data in the file
 #  the first row should name the columns including EnergykeV and I
 
+## Value of NH in per cm2 (either give a value or a value and a file from the config/ascii directory
+# NH=1e22 
+# NH='1e22;tbabs.dat'
+# the first row should name the columns including Energy and sigma
+#     sigma is the cross section times (E/keV)^2 / (1e-24 cm^2)
+#     ssabs=np.interp(enerlist,abarr['Energy'],abarr['sigma']/(enerlist)**3*1e-24
+
+
+# final band renorm (you can renormalize the phase-average flux in the band 2-8 keV after the absorption
+# finalnorm=1e-2 # total flux from 2-8 keV in (counts or erg)/cm2/s after absorption
+
 ### END KEY DEFINITIONS
 
 
@@ -177,8 +188,45 @@ if normflux is not None:
         # assume norm flux is an array of fluxes at the same energies as enerlist
         flux=numpy.transpose((normflux/meanflux)*numpy.transpose(flux))
 
+
+# check if there is an NH value
+try:
+    NH
+except NameError:
+    NH = None
+
+if NH is not None:
+    if type(NH) is float:
+        abfilename='tbabs.dat'
+    elif type(NH) is str:
+        aa=split(NH,';')
+        abfilename=aa[1]
+        NH=float(aa[0])
+    else: 
+        raise ValueError('The value of NH should be a float or a string with value;filename.')
+    abarr=numpy.genfromtxt(_full_path(abfilename),names=True)
+    abarr=numpy.sort(abarr,order=('Energy')
+    ssabs=np.interp(enerlist,abarr['Energy'],abarr['sigma']/(enerlist)**3*1e-24
+    flux=numpy.transpose(np.exp(-NH*ssabs)*numpy.transpose(flux))
+
+# check if we have to do a final normalization
+try:
+    finalnorm
+except NameError:
+    finalnorm = None
+
+if finalnorm is not None:
+    if type(finalnorm) is float:
+        meanflux=numpy.mean(flux,axis=-1)
+        from scipy.integrate import simps
+        # renormalize the total flux over the band 2-8 keV
+        ok=(enerlist>2) & (enerlist<8)
+        flux=flux/simps(meanflux[ok],enerlist[ok])*finalnorm
+    else:
+        raise ValueError('The value of finalnorm should be a float.')
+
 #
-# if the intensity is an energy flux, then renormalize to make a intensity 
+# if the intensity is an energy flux, then renormalize to make a photon flux
 # KEY LINE: intensity units
 #
 if intensity_energy_units:
