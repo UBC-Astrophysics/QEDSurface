@@ -1,4 +1,5 @@
 #   Phi[rad]  Energy[keV]            I          Q/I
+# I is the mean intensity over the image in units of erg/s/cm^2/sr/keV
            0     0.316228      1300.44  9.34778e-09
            0     0.331285      1331.52  9.38475e-09
            0      0.34706      1354.63  9.43289e-09
