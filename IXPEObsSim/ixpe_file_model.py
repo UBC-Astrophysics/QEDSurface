@@ -49,7 +49,7 @@ beta=numpy.radians(85)
 
 ## Renormalize the phase-averaged flux
 # different renormalizations for the phase averaged flux
-normflux=1e-2 # total flux from 2-8 keV in (counts or erg)/cm2/s
+normflux=1e-10 # total flux from 2-8 keV in (counts or erg)/cm2/s
 #
 #normflux=enerlist**(-2)*1e-2 # normalize by an array
 #
@@ -59,11 +59,12 @@ normflux=1e-2 # total flux from 2-8 keV in (counts or erg)/cm2/s
 #  the first row should name the columns including EnergykeV and I
 
 ## Value of NH in per cm2 (either give a value or a value and a file from the config/ascii directory
-# NH=1e22 
+# ROIModel can also include the absorption
+# NH=1e24 
 # NH='1e22;tbabs.dat'
 # the first row should name the columns including Energy and sigma
 #     sigma is the cross section times (E/keV)^2 / (1e-24 cm^2)
-#     ssabs=np.interp(enerlist,abarr['Energy'],abarr['sigma']/(enerlist)**3*1e-24
+#     ssabs=numpy.interp(enerlist,abarr['Energy'],abarr['sigma']/(enerlist)**3*1e-24
 
 
 # final band renorm (you can renormalize the phase-average flux in the band 2-8 keV after the absorption
@@ -179,7 +180,7 @@ if normflux is not None:
         flux=flux/simps(meanflux[ok],enerlist[ok])*normflux
     elif type(normflux) is str:
         narr=numpy.genfromtxt(_full_path(normflux),names=True)
-        narr=numpy.sort(narr,order=('EnergykeV')
+        narr=numpy.sort(narr,order=('EnergykeV'))
         flux=numpy.transpose((numpy.interp(enerlist,narr['EnergykeV'],narr['I'])/meanflux)*numpy.transpose(flux))
     elif callable(normflux):
         # assume norm flux is a function of energy 
@@ -205,9 +206,9 @@ if NH is not None:
     else: 
         raise ValueError('The value of NH should be a float or a string with value;filename.')
     abarr=numpy.genfromtxt(_full_path(abfilename),names=True)
-    abarr=numpy.sort(abarr,order=('Energy')
-    ssabs=np.interp(enerlist,abarr['Energy'],abarr['sigma']/(enerlist)**3*1e-24
-    flux=numpy.transpose(np.exp(-NH*ssabs)*numpy.transpose(flux))
+    abarr=numpy.sort(abarr,order=('Energy'))
+    ssabs=numpy.interp(enerlist,abarr['Energy'],abarr['sigma'])/(enerlist)**3*1e-24
+    flux=numpy.transpose(numpy.exp(-NH*ssabs)*numpy.transpose(flux))
 
 # check if we have to do a final normalization
 try:
