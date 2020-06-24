@@ -1,0 +1,1 @@
+../../../ximpol/config/ascii/11qedoff.txt

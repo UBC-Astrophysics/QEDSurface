@@ -1,0 +1,1 @@
+../../../ximpol/config/ascii/17qedon.txt

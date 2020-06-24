@@ -1,0 +1,1 @@
+../../../ximpol/config/ascii/1.5e+06_kii_qedon.txt
