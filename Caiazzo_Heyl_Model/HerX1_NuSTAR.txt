@@ -1,7 +1,9 @@
 # Energy[keV]      E_Flux_E[keV_cm-2_s^-1]  I
 # Phase-averaged flux from NuStar observations of Her X-1
 # From Figure 1 2016ApJ...831..194W
+# First Row is an extrapolation to 1 keV
 # Final column I is in units of Photons cm-2 s-1 keV-1
+0.9803826043859143 0.17581156393202946	0.1829179156  
 4.1633822874790996 0.6971399917102264   0.04021864331  
 4.280099414720974 0.7182180926318738	0.03920564725  
 4.414278524710193 0.7441194811066658	0.03818767435  

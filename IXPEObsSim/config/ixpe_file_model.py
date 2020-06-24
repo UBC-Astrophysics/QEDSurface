@@ -35,11 +35,13 @@ nuddot = 0.
 # columns should be named in the first row
 # EnergykeV Phirad EnergykeV QI I
 # the rows and columns can be in any order
-filename="Double_Blackbody.txt"
+#filename="Double_Blackbody.txt"
+#filename="10qedon.txt"
+filename='Polarization_wQED_7k_2c.txt'
 
 # are the intensities or fluxes in the file in energy units? (IXPEObsSim wants photon units)
 # this is done after other renormalizations
-intensity_energy_units=True
+#intensity_energy_units=True
 
 ## Geometry of dipole
 # alpha is the angle between the line of sight and rotation axis
@@ -49,19 +51,19 @@ beta=numpy.radians(85)
 
 ## Renormalize the phase-averaged flux
 # different renormalizations for the phase averaged flux
-normflux=1e-10 # total flux from 2-8 keV in (counts or erg)/cm2/s
+#normflux=1e-10 # total flux from 2-8 keV in (counts or erg)/cm2/s
 #
 #normflux=enerlist**(-2)*1e-2 # normalize by an array
 #
 #normflux=(lambda x: 1e-3*x**-2) # normalize by a function of energy
 #
-#normflux='renorm.txt' # normalize using data in the file
+normflux='HerX1_NuSTAR.txt' # normalize using data in the file
 #  the first row should name the columns including EnergykeV and I
 
 ## Value of NH in per cm2 (either give a value or a value and a file from the config/ascii directory
 # ROIModel can also include the absorption
 # NH=1e24 
-# NH='1e22;tbabs.dat'
+# NH='1e24;tbabs.dat'
 # the first row should name the columns including Energy and sigma
 #     sigma is the cross section times (E/keV)^2 / (1e-24 cm^2)
 #     ssabs=numpy.interp(enerlist,abarr['Energy'],abarr['sigma']/(enerlist)**3*1e-24
@@ -112,13 +114,6 @@ incllist=numpy.unique(inclination)
 enerlist=numpy.unique(energy)
 fluxmod=arr['I'].reshape((len(enerlist),len(incllist)))
 
-#
-# if the intensity is an energy flux, then convert to make a photon flux
-#
-
-if intensity_energy_units:
-    fluxmod=numpy.transpose(numpy.transpose(fluxmod)/(enerlist*1.60217662e-9)) # 1.60217662e-9 erg = 1 keV
-
 # build the spectrum and polarization as a function of energy and inclination 
 energy_spectrum_inclination=numpy.vectorize(RectBivariateSpline(enerlist,incllist,
                                                                   fluxmod,kx=3,ky=3))
@@ -127,6 +122,9 @@ ratio_inclination=numpy.vectorize(RectBivariateSpline(enerlist,incllist,
 
 # energy_spectrum_inclination=numpy.vectorize(scipy.interpolate.interp2d(energy,inclination,flux*energy,kind='linear'))
 # ratio_inclination=numpy.vectorize(scipy.interpolate.interp2d(energy,inclination,ratio,kind='linear'))
+
+def llinterp(xval,xv,yv):
+    return numpy.exp(numpy.interp(numpy.log(xval),numpy.log(xv),numpy.log(yv)))
 
 # inclination as a function of phase
 def inclination(t):
@@ -181,7 +179,7 @@ if normflux is not None:
     elif type(normflux) is str:
         narr=numpy.genfromtxt(_full_path(normflux),names=True)
         narr=numpy.sort(narr,order=('EnergykeV'))
-        flux=numpy.transpose((numpy.interp(enerlist,narr['EnergykeV'],narr['I'])/meanflux)*numpy.transpose(flux))
+        flux=numpy.transpose((llinterp(enerlist,narr['EnergykeV'],narr['I'])/meanflux)*numpy.transpose(flux))
     elif callable(normflux):
         # assume norm flux is a function of energy 
         flux=numpy.transpose((normflux(enerlist)/meanflux)*numpy.transpose(flux))
@@ -207,7 +205,7 @@ if NH is not None:
         raise ValueError('The value of NH should be a float or a string with value;filename.')
     abarr=numpy.genfromtxt(_full_path(abfilename),names=True)
     abarr=numpy.sort(abarr,order=('Energy'))
-    ssabs=numpy.interp(enerlist,abarr['Energy'],abarr['sigma'])/(enerlist)**3*1e-24
+    ssabs=llinterp(enerlist,abarr['Energy'],abarr['sigma'])/(enerlist)**3*1e-24
     flux=numpy.transpose(numpy.exp(-NH*ssabs)*numpy.transpose(flux))
 
 # check if we have to do a final normalization
@@ -230,8 +228,12 @@ if finalnorm is not None:
 # if the intensity is an energy flux, then renormalize to make a photon flux
 # KEY LINE: intensity units
 #
-if intensity_energy_units:
-    flux=numpy.transpose(numpy.transpose(flux)/(enerlist*1.60217662e-9)) # 1.60217662e-9 erg = 1 keV
+try:
+    if intensity_energy_units:
+        flux=numpy.transpose(numpy.transpose(flux)/(enerlist*1.60217662e-9)) # 1.60217662e-9 erg = 1 keV
+except NameError:
+    pass
+
         
 if ixpe_loaded:
 
