@@ -260,7 +260,9 @@ if ixpe_loaded:
     # Move on to the actual ROI model.
     ROI_MODEL = xROIModel(ra, dec)
     ephem = xEphemeris(0., nu0, nudot, nuddot)
-    src = xPeriodicPointSource(source_name, ra, dec, spec_spline, pol_deg_spline, pol_ang_spline, ephem)
+    src = xPeriodicPointSource(source_name, ra, dec, spec_spline,
+                               (lambda e,p,ra=None,dec=None : pol_deg_spline(e,p)),
+                               (lambda e,p,ra=None,dec=None : pol_ang_spline(e,p)), ephem)
     ROI_MODEL.add_source(src)
 
 def display_spectrum(emin=1.1, emax=12., phase_indices=[10, 40, 60, 80]):
