@@ -200,7 +200,7 @@ if NH is not None:
     if type(NH) is float:
         abfilename='tbabs.dat'
     elif type(NH) is str:
-        aa=split(NH,';')
+        aa=NH.split(';')
         abfilename=aa[1]
         NH=float(aa[0])
     else: 
