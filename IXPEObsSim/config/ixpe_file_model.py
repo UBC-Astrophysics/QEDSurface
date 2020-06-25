@@ -263,8 +263,12 @@ if ixpe_loaded:
                zlabel='Flux [cm$^{-2}$ s$^{-1}$ keV$^{-1}$]')
 
     spec_spline = xInterpolatedBivariateSpline(enerlist, phase, flux, kx=3, ky=3, **fmt)
-    spec = spec_spline
+else:
+    spec_spline = numpy.vectorize(RectBivariateSpline(enerlist,phase,flux, kx=3, ky=3))
+    
+spec = spec_spline
 
+if ixpe_loaded:    
     fmt = dict(xlabel='Energy [keV]', ylabel='Phase', zlabel='Polarization degree')
 
     pol_deg_data=pol_deg(ee,tt)
@@ -278,20 +282,12 @@ if ixpe_loaded:
     # Move on to the actual ROI model.
     ROI_MODEL = xROIModel(ra, dec)
     ephem = xEphemeris(0., nu0, nudot, nuddot)
-#    src = xPeriodicPointSource(source_name, ra, dec, spec_spline,
-#                               (lambda e,p,ra=None,dec=None : numpy.minimum(pol_deg_spline(e,p),1)),
-#                               (lambda e,p,ra=None,dec=None : pol_ang_spline(e,p)), ephem)
 
     from ixpeobssim.srcmodel.polarization import constant
 
-    src = xPeriodicPointSource(source_name, ra, dec, spec_spline,
+    src = xPeriodicPointSource(source_name, ra, dec, spec,
                                pol_deg,pol_ang, ephem)
-#                               (lambda ee,pp,rr,dd: 0.9),
-#                                (lambda ee,pp,rr,dd: numpy.clip(pol_deg_spline(ee,pp),0,1)),
-#                                (lambda ee,pp,rr,dd: pol_ang_spline(5.0,pp)), ephem)
-#                                    (lambda ee,pp,rr,dd: pol_ang_spline(5.0,pp)), ephem)
-#                               (lambda ee,pp,rr,dd: 0.5), ephem)
-    ROI_MODEL.add_source(src)
+   ROI_MODEL.add_source(src)
 
 def display_spectrum(emin=1.1, emax=12., phase_indices=[10, 40, 60, 80]):
     """Display the energy spectrum.
