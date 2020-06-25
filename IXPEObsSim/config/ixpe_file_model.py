@@ -37,27 +37,28 @@ nuddot = 0.
 # the rows and columns can be in any order
 #filename="Double_Blackbody.txt"
 #filename="10qedon.txt"
-filename='Polarization_wQED_7k_2c.txt'
+
+## Geometry of dipole
+# alpha is the angle between the line of sight and rotation axis
+alpha=numpy.radians(50)
+# beta is the angle between the magnetic axis and the rotation axis
+beta=numpy.radians(42)
 
 # are the intensities or fluxes in the file in energy units? (IXPEObsSim wants photon units)
 # this is done after other renormalizations
 #intensity_energy_units=True
 
-## Geometry of dipole
-# alpha is the angle between the line of sight and rotation axis
-alpha=numpy.radians(45)
-# beta is the angle between the magnetic axis and line of sight
-beta=numpy.radians(85)
+
 
 ## Renormalize the phase-averaged flux
 # different renormalizations for the phase averaged flux
-#normflux=1e-10 # total flux from 2-8 keV in (counts or erg)/cm2/s
+#normflux=1e-9 # total flux from 2-8 keV in (counts or erg)/cm2/s
 #
 #normflux=enerlist**(-2)*1e-2 # normalize by an array
 #
 #normflux=(lambda x: 1e-3*x**-2) # normalize by a function of energy
 #
-normflux='HerX1_NuSTAR.txt' # normalize using data in the file
+#normflux='HerX1_NuSTAR.txt' # normalize using data in the file
 #  the first row should name the columns including EnergykeV and I
 
 ## Value of NH in per cm2 (either give a value or a value and a file from the config/ascii directory
@@ -73,6 +74,24 @@ normflux='HerX1_NuSTAR.txt' # normalize using data in the file
 # finalnorm=1e-2 # total flux from 2-8 keV in (counts or erg)/cm2/s after absorption
 
 ### END KEY DEFINITIONS
+
+### Values for Caiazzo & Heyl Paper
+
+# Figure 6 from Caiazzo & Heyl
+#filename='Polarization_wQED_7k_1c.txt'
+#alpha=numpy.radians(83)
+#beta=numpy.radians(86)
+#intensity_energy_units=False
+#normflux='HerX1_NuSTAR.txt' # normalize using data in the file
+
+# Figure 7 from Caiazzo & Heyl
+filename='Polarization_wQED_7k_2c.txt'
+alpha=numpy.radians(50)
+beta=numpy.radians(42)
+intensity_energy_units=False
+normflux='HerX1_NuSTAR.txt' # normalize using data in the file
+
+### 
 
 
 
@@ -130,29 +149,27 @@ def llinterp(xval,xv,yv):
 def inclination(t):
     phi_phase=numpy.radians(t*360)
     if (incllist[-1] > numpy.pi/2):
-        return numpy.arccos(numpy.cos(alpha)*numpy.cos(alpha-beta)+
-                                      numpy.sin(alpha)*numpy.sin(alpha-beta)*numpy.cos(phi_phase))
+        return numpy.arccos(numpy.cos(alpha)*numpy.cos(beta)+
+                                      numpy.sin(alpha)*numpy.sin(beta)*numpy.cos(phi_phase))
     else:
-        return numpy.arccos(numpy.abs(numpy.cos(alpha)*numpy.cos(alpha-beta)+
-                                      numpy.sin(alpha)*numpy.sin(alpha-beta)*numpy.cos(phi_phase)))
+        return numpy.arccos(numpy.abs(numpy.cos(alpha)*numpy.cos(beta)+
+                                      numpy.sin(alpha)*numpy.sin(beta)*numpy.cos(phi_phase)))
 
 # polarization degree as a function of energy and phase
 def pol_deg(E, t, ra=None, dec=None):
-    return numpy.abs(ratio_inclination(E,inclination(t)))
+    return numpy.minimum(numpy.abs(ratio_inclination(E,inclination(t))),1)
 
 
 # polarization angle as a function of energy and phase
 def pol_ang(E, t, ra=None, dec=None):
+    ii=inclination(t)
+    rat=ratio_inclination(E,ii)
     phi_phase=numpy.radians(t*360)
-    rat=ratio_inclination(E,inclination(t))
-    ang=numpy.arctan(numpy.sin(alpha)*numpy.sin(phi_phase)/
-                        (numpy.sin(alpha+beta)*numpy.cos(alpha)-
-                         numpy.cos(alpha+beta)*numpy.sin(alpha)*
-                         numpy.cos(phi_phase)))
-    return numpy.where(rat>0,ang+1.5707963268,ang)
+    ang=numpy.arcsin(numpy.sin(beta)*numpy.sin(phi_phase)/numpy.sin(ii))
+    return numpy.mod(numpy.where(rat>0,ang+1.5707963268,ang),numpy.pi)
 
 # energy spectrum as a function of energy and phase
-def spec(E,t):
+def rawspec(E,t):
     return energy_spectrum_inclination(E,inclination(t))
 
 # set up phase bins
@@ -160,7 +177,7 @@ phase=numpy.linspace(0,1,101)
 #    print(phase,inclination(phase))
 #    ee,tt=numpy.meshgrid(enerlist,phase)
 tt,ee=numpy.meshgrid(phase,enerlist)
-flux=spec(ee,tt)
+flux=rawspec(ee,tt)
 meanflux=numpy.mean(flux,axis=-1)
 
 # check if we have to renormalize
@@ -246,6 +263,7 @@ if ixpe_loaded:
                zlabel='Flux [cm$^{-2}$ s$^{-1}$ keV$^{-1}$]')
 
     spec_spline = xInterpolatedBivariateSpline(enerlist, phase, flux, kx=3, ky=3, **fmt)
+    spec = spec_spline
 
     fmt = dict(xlabel='Energy [keV]', ylabel='Phase', zlabel='Polarization degree')
 
@@ -260,9 +278,19 @@ if ixpe_loaded:
     # Move on to the actual ROI model.
     ROI_MODEL = xROIModel(ra, dec)
     ephem = xEphemeris(0., nu0, nudot, nuddot)
+#    src = xPeriodicPointSource(source_name, ra, dec, spec_spline,
+#                               (lambda e,p,ra=None,dec=None : numpy.minimum(pol_deg_spline(e,p),1)),
+#                               (lambda e,p,ra=None,dec=None : pol_ang_spline(e,p)), ephem)
+
+    from ixpeobssim.srcmodel.polarization import constant
+
     src = xPeriodicPointSource(source_name, ra, dec, spec_spline,
-                               (lambda e,p,ra=None,dec=None : pol_deg_spline(e,p)),
-                               (lambda e,p,ra=None,dec=None : pol_ang_spline(e,p)), ephem)
+                               pol_deg,pol_ang, ephem)
+#                               (lambda ee,pp,rr,dd: 0.9),
+#                                (lambda ee,pp,rr,dd: numpy.clip(pol_deg_spline(ee,pp),0,1)),
+#                                (lambda ee,pp,rr,dd: pol_ang_spline(5.0,pp)), ephem)
+#                                    (lambda ee,pp,rr,dd: pol_ang_spline(5.0,pp)), ephem)
+#                               (lambda ee,pp,rr,dd: 0.5), ephem)
     ROI_MODEL.add_source(src)
 
 def display_spectrum(emin=1.1, emax=12., phase_indices=[10, 40, 60, 80]):
