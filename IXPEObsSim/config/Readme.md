@@ -32,4 +32,11 @@ This file can contain other information, and the row and columns can be in any o
 
 ## Components within the ixpe_file_model module
 
-* 
+You can access all of the a forementioned parameters from outside the module as `ixpe_file_model.ra` for example.  There are many additional components defined with energy `E` in keV, inclination `i` in radians, phase `t` from 0 to 1:
+
+* `energy_spectrum_inclination(E,i)`
+* `ratio_inclination(E,i)`
+* ` pol_deg(E, t, ra=None, dec=None)`
+* `pol_ang(E, t, ra=None, dec=None)` in radians
+* `rawspec(E,t)`: unabsorbed spectrum before renormalization
+* `spec(E,t)`: absorbed counts spectrum after renormalization
