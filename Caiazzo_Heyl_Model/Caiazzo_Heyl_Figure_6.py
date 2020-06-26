@@ -299,7 +299,7 @@ def display_spectrum(emin=1.1, emax=12., phase_indices=[10, 40, 60, 80]):
         slice_.plot(label='Pulse phase = %.2f' % _phase)
         plt.plot(enerlist, flux[:,i], 'o', color=last_line_color())
     setup_gca(xmin=emin, xmax=emax, logx=True, logy=True, grids=True,
-              ymin=1.e-5, ymax=2.e-2, legend=True)
+              ymin=2.e-4, ymax=8.e-1, legend=True)
 
 
 def display_pol_deg(emin=1.1, emax=12., phase_indices=[10, 40, 60, 80],
