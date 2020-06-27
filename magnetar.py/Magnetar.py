@@ -529,10 +529,12 @@ class partial_res_comptonization(atmosphere):
         if self.y < 0:
             frac = np.interp(dataarray[-1], self.ee, self.frac)
             resx = np.interp(dataarray[-1], self.ee, self.xxout)
-            rat = np.interp(dataarray[-1], self.ee,
-                            np.pi * self.xxout / (0.5 * (self.ii - self.qq)))
-            return rat * self.atmo.xintensity(dataarray) * frac + resx * (
+#            rat = np.interp(dataarray[-1], self.ee,
+#                            np.pi * self.xxout / (0.5 * (self.ii - self.qq)))
+            return self.atmo.xintensity(dataarray) * frac + resx * (
                 1 - frac)
+#            return rat * self.atmo.xintensity(dataarray) * frac + resx * (
+#                1 - frac)
         else:
             return np.interp(dataarray[-1], self.ee, self.xxout)
 
@@ -544,10 +546,12 @@ class partial_res_comptonization(atmosphere):
                 np.radians(dataarray[0])) * np.cos(np.radians(dataarray[1]))
             frac = np.interp(dataarray[-1], self.ee, self.frac)
             reso = np.interp(dataarray[-1], self.ee, self.ooout)
-            rat = np.interp(dataarray[-1], self.ee,
-                            np.pi * self.ooout / (0.5 * (self.ii + self.qq)))
-            return rat * self.atmo.ointensity(dataarray) * frac + reso * (
+#            rat = np.interp(dataarray[-1], self.ee,
+#                            np.pi * self.ooout / (0.5 * (self.ii + self.qq)))
+            return self.atmo.ointensity(dataarray) * frac + reso * (
                 1 - frac) * cosangkb**2
+#            return rat * self.atmo.ointensity(dataarray) * frac + reso * (
+#               1 - frac) * cosangkb**2
         else:
             return np.interp(dataarray[-1], self.ee, self.ooout)
 
