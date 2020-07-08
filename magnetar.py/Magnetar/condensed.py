@@ -1,18 +1,28 @@
-from numpy import sin, cos, arccos, exp, expm1, log, sqrt, clip, minimum, maximum, where
+from numpy import sin, cos, arccos, exp, expm1, log, sqrt, clip, minimum, maximum, where, pi, logspace
 from Magnetar.utils import atmosphere
+from scipy.integrate import simps
 
 class condensed_surface(atmosphere):
     def __init__(self,effective_temperature,mag_strength,mag_inclination,density,fixed_ions=True):
         self.effective_temperature=effective_temperature
         self.mag_strength=mag_strength
         self.mag_inclination=mag_inclination
-        self.blackbody_temperature=self.effective_temperature
         self.fixed_ions=fixed_ions
         self.dens=density
         self.Z=26.
         self.A=56.
+        self.surface_temperature=self.effective_temperature
+        fluxgoal=208452.792*pi**5/15*self.effective_temperature**4
+        # need to update surface temperature so that the outgoing flux is the effective temperature
+        # do this iteratively ... converges very quickly (typically the surface temperature is 5-20% larger than Teff)
+        for ii in range(5):
+            eeloc=logspace(-2,2,101)*self.surface_temperature
+            iiloc,qqloc=self.fluxIQ(eeloc)
+            flux=simps(iiloc,eeloc)*1.0000036200079545**4   # small correction to account for the range in the energy integral
+            self.surface_temperature/=(flux/fluxgoal)**0.25
+#            print(self.surface_temperature)
     def _bbfunk(self, ee):  # per mode
-        return 208452.792 * ee**3 / expm1(ee / self.blackbody_temperature) / 2
+        return 208452.792 * ee**3 / expm1(ee / self.surface_temperature) / 2
     #
     # This computes the emissivity from a condensed surface using the approximate treatment
     # by Potekhin et al. (2012, A&A, 546, A121) https://arxiv.org/pdf/1208.6582.pdf
