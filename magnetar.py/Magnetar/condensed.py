@@ -106,7 +106,7 @@ class condensed_surface(atmosphere):
         else:
             #
             aa1=1.-ctb**2*ctk-stb**2*(cos(alpha))
-            aa1=maximum(aa1,0.99999)
+            aa1=minimum(aa1,0.99999)
             #
             # There are three cases:
             #
