@@ -9,37 +9,53 @@ class condensed_surface(atmosphere):
         self.blackbody_temperature=self.effective_temperature
         self.fixed_ions=fixed_ions
         self.dens=density
+        self.Z=26.
+        self.A=56.
     def _bbfunk(self, ee):  # per mode
         return 208452.792 * ee**3 / np.expm1(ee / self.blackbody_temperature) / 2
     #
     # This computes the emissivity from a condensed surface using the approximate treatment
     # by Potekhin et al. (2012, A&A, 546, A121) https://arxiv.org/pdf/1208.6582.pdf
     #
-    def emissivity_xo(dataarray):
+    def emissivity_xo(self,dataarray):
+        # get dataarray values
         thetak=dataarray[-3]
         phik=dataarray[-2]
         ene=dataarray[-1]
+        # magnetic field
         B13=self.mag_strength/1e13
+        # useful energies
+        epe=0.0288*sqrt(self.dens*self.Z/self.A)
+        eci=0.0635*(self.Z/self.A)*B13
+        ece=115.77*B13
+        n0=sqrt(1.+epe**2/(2.*ece*eci))
+        ec=eci+epe**2/ece
+        ecfx=epe**2/ece
+        #
+        # geometric stuff
+        #
         thetab=self.mag_inclination
         stb=sin(thetab)
         ctb=cos(thetab)
         stk=sin(thetak)
         ctk=cos(thetak)
         ctk=clip(ctk,0.0,0.9999)
-        stk=clip(stk,(1-0.9999^2)**0.5,1.0)
+        stk=clip(stk,(1-0.9999**2)**0.5,1.0)
         cali = (stb*stk*cos(phik)-ctb*ctk)
         calr = (stb*stk*cos(phik)+ctb*ctk)
         cali=clip(cali,-0.9999,0.9999)
         calr=clip(calr,-0.9999,0.9999)
         alphai=arccos(cali)
         alphar=arccos(calr)
-        alpha=minimum(ali,alr) 
+        alpha=minimum(alphai,alphar)
         #
-        # define some other useful energies
+        # some energies that depend on angle
         #
         epet=epe*sqrt(3.-2.*ctk)
-        ectfx=epet^2/ece
-        ect=eci+epet^2/ece
+        ectfx=epet**2/ece
+        ect=eci+epet**2/ece
+        #
+        # translation matrix between surface modes and X and O
         #
         ypie1i = (cos(thetab)*sin(thetak)+sin(thetab)*cos(thetak)*cos(phik))/sin(alphai)
         xpie1i = (sin(thetab)*sin(phik))/sin(alphai)
@@ -52,7 +68,7 @@ class condensed_surface(atmosphere):
         xpre2r = (cos(thetab)*sin(thetak)-sin(thetab)*cos(thetak)*cos(phik))/sin(alphar)
         #
         if (self.fixed_ions):
-            ject=1./2.+0.05*(1.+ctb*stk)/(1.+B13)-0.15*(1.-ctb)*sin(al)
+            ject=1./2.+0.05*(1.+ctb*stk)/(1.+B13)-0.15*(1.-ctb)*sin(alpha)
             jeci=2.*n0*(1.+(ctb-ctk)/2./(1.+B13))/(1.+n0)**2
             pfx=0.1*(1.+stb)/(1.+B13)
             jbfx=ject/(1-pfx+pfx*(ectfx/ene)**0.6)
@@ -65,13 +81,13 @@ class condensed_surface(atmosphere):
             # endif
             # if (ene gt ectfx) then begin
             el=epe*(1.+1.2*(1.-ctk)**1.5)*(1.-stb**2/3.)
-            ntfx=sqrt(1.-epet^2/(ece*(ene)))
+            ntfx=sqrt(1.-epet**2/(ece*(ene)))
             jcfx=4.*ntfx/(1.+ntfx)**2
-            wlfx=0.8*(ectfx/epe)^0.2*sqrt(sin(al/2.))*(1.+stb**2)
+            wlfx=0.8*(ectfx/epe)**0.2*sqrt(sin(alpha/2.))*(1.+stb**2)
             xfx=(ene-el)/(1.-ctk)/2./epe/wlfx
-            ellfx=stk^2*wlfx*(0.17*epe/ecfx/(1.+xfx**4)+0.21*exp(-(ene/epe)**2))
-            rellfx=stb**0.25*(2.-(sin(al))**4)*ellfx/(1.+ellfx)
-            fLfx = 1./(1.+exp(5*((EL-ene)/(EL-ectfx))))
+            ellfx=stk**2*wlfx*(0.17*epe/ecfx/(1.+xfx**4)+0.21*exp(-(ene/epe)**2))
+            rellfx=stb**0.25*(2.-(sin(alpha))**4)*ellfx/(1.+ellfx)
+            fLfx = 1./(1.+exp(5*((el-ene)/(el-ectfx))))
             emis_case2=jbfx*(1.-jcfx)+jcfx/(1.+ellfx)
             emis1_case2=jb1fx*(1.-jcfx)+jcfx*(1.-rellfx)
             # choose the right case
