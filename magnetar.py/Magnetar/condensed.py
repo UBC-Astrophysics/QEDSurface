@@ -1,9 +1,9 @@
-from numpy import sin, cos, arccos, exp, log, sqrt, clip, minimum, maximum, where
+from numpy import sin, cos, arccos, exp, expm1, log, sqrt, clip, minimum, maximum, where
 from Magnetar.utils import atmosphere
 
 class condensed_surface(atmosphere):
     def __init__(self,effective_temperature,mag_strength,mag_inclination,density,fixed_ions=True):
-        self.effective_temperature=effective_temperature,mag_strength,mag_inclination
+        self.effective_temperature=effective_temperature
         self.mag_strength=mag_strength
         self.mag_inclination=mag_inclination
         self.blackbody_temperature=self.effective_temperature
@@ -12,7 +12,7 @@ class condensed_surface(atmosphere):
         self.Z=26.
         self.A=56.
     def _bbfunk(self, ee):  # per mode
-        return 208452.792 * ee**3 / np.expm1(ee / self.blackbody_temperature) / 2
+        return 208452.792 * ee**3 / expm1(ee / self.blackbody_temperature) / 2
     #
     # This computes the emissivity from a condensed surface using the approximate treatment
     # by Potekhin et al. (2012, A&A, 546, A121) https://arxiv.org/pdf/1208.6582.pdf
@@ -95,7 +95,7 @@ class condensed_surface(atmosphere):
             emis1=where(ene<ectfx,emis1_case1,emis1_case2)
         else:
             #
-            aa1=1.-ctb**2*ctk-stb**2*(cos(al))
+            aa1=1.-ctb**2*ctk-stb**2*(cos(alpha))
             aa1=maximum(aa1,0.99999)
             #
             # There are three cases:
@@ -114,9 +114,9 @@ class condensed_surface(atmosphere):
             r0m=(n0m-1.)**2/(n0m+1.)**2
             j0=1.-(r0p+r0m)/2.
             j00=4./((sqrt(ec/eci)+1.)*(sqrt(eci/ec)+1.))
-            a=(1.-ctb)/2./sqrt(1.+B13)+(0.7-0.45/j00)*stk**4*(1.-cos(al))
+            a=(1.-ctb)/2./sqrt(1.+B13)+(0.7-0.45/j00)*stk**4*(1.-cos(alpha))
             ja=(1.-a)*j0
-            ject=1./2.+0.05*(1.+ctb*stk)/(1.+B13)-0.15*(1.-ctb)*sin(al)
+            ject=1./2.+0.05*(1.+ctb*stk)/(1.+B13)-0.15*(1.-ctb)*sin(alpha)
             jeci=2.*n0*(1.+(ctb-ctk)/2./(1.+B13))/(1.+n0)**2
             p=log(ject/jeci)/log(ect/eci)
             jb=(ene/ect)**p*ject
@@ -129,9 +129,9 @@ class condensed_surface(atmosphere):
             emis_case1=maximum(ja,jb)
             emis1_case1=maximum(ja1,jb1)
             # endif   
-            ject=1./2.+0.05*(1.+ctb*stk)/(1.+B13)-0.15*(1.-ctb)*sin(al)
+            ject=1./2.+0.05*(1.+ctb*stk)/(1.+B13)-0.15*(1.-ctb)*sin(alpha)
             jeci=2.*n0*(1.+(ctb-ctk)/2./(1.+B13))/(1.+n0)**2
-            p=alog(ject/jeci)/alog(ect/eci)
+            p=log(ject/jeci)/log(ect/eci)
             jb=(ene/ect)**p*ject
             ject1=0.5+0.05/(1.+B13)+0.25*stb
             jeci1=(1.-aa1)*jeci
@@ -145,10 +145,10 @@ class condensed_surface(atmosphere):
             nt=sqrt(1.-epet**2/(ece*(ene-eci)))
             jc=4.*nt/(1.+nt)**2
             el=epe*(1.+1.2*(1.-ctk)**1.5)*(1.-stb**2/3.)
-            wl=0.8*(ect/epe)**0.2*sqrt(sin(al/2.))*(1.+stb**2)
+            wl=0.8*(ect/epe)**0.2*sqrt(sin(alpha/2.))*(1.+stb**2)
             x=(ene-el)/(1.-ctk)/2./epe/wl
             ell=stk**2*wl*(0.17*epe/ec/(1.+x**4)+0.21*exp(-(ene/epe)**2))
-            rell=stb**0.25*(2.-(sin(al))**4)*ell/(1.+ell)
+            rell=stb**0.25*(2.-(sin(alpha))**4)*ell/(1.+ell)
             emis_case3=jb*(1.-jc)+jc/(1.+ell)
             emis1_case3=jb1*(1.-jc)+jc*(1.-rell)
             # endif
