@@ -1,0 +1,1 @@
+../../../magnetar.py/Partial_Resonant_Scattering_Iso.txt
