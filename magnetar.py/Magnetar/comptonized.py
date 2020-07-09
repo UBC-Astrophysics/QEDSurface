@@ -173,6 +173,18 @@ class partial_res_comptonization(atmosphere):
         else:
             return np.interp(dataarray[-1], self.ee, self.ooout)
 
+# new model that does the up-scattering for both low and high energy power-law
+# the parameters are y, kTe, maximum relative energy boost for low-E power-law, high-energy slope in phase-space density
+# the final parameter is the slope of E f_E minus 4! \
+# e.g.
+# tw_patch150=Magnetar.partial_twisted_comptonization(allsurface.patches[3],0.151,150,7.0,-2.7)
+#
+# if high-energy part came from Kompaneet's equation with constant kTe and sigma then
+# -2.7 = -1.5 pm sqrt (2.25 + 4/y)
+# -1.2 = pm sqrt (2.25 + 4/y) -> 1.44 = 2.25 + 4/y -> y= -4.93 ( ? nonsense )
+# so high-energy part comes from another process ... e.g. scattering off of relativistic electrons with a power-law distribution
+# where the number of scatterers increases with energy as E^0.4 ... there are more electrons on loops closer to the star and they 
+# scatter photons to higher energies ... Efinal = Gamma E
 
 class partial_twisted_comptonization(atmosphere):
     def __init__(self, atmo, y, kTe, ehuge, phuge):
