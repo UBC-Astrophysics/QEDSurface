@@ -224,7 +224,7 @@ class pfield:
         return fig
     
         def display(self):
-            reeturn plot(datamap=np.log10(self.data['X']+self.data['O']),cmap='inferno',ellipsecolor=[0,0.9,0])
+            return self.plot(datamap=np.log10(self.data['X']+self.data['O']),cmap='inferno',ellipsecolor=[0,0.9,0])
 
 class pfield_array:
     def __init__(self):
