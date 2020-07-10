@@ -1,5 +1,7 @@
 # QEDSurface
 
+This branch is what was on the cocalc server before I updated it to the master branch.
+
 pfield will calculate the outgoing intensity in Stokes's Q using
 projection of the star's the magnetic moment into the plane of
 the sky as the reference direction under the assumption that at
