@@ -144,3 +144,6 @@ class surface_model(atmosphere):
 
     def calcmeanIQ(self, angkbarray):
         return self._interpolate_double(angkbarray, 'calcmeanIQ')
+
+def dipole_model(cval,tpole,bpole,*args,**kwargs):
+    return cval(tpole,bpole,0.0,*args,**kwargs)    
