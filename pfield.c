@@ -18,8 +18,10 @@ main(int argc, char *argv[])
   double s[NVAR+1];
   double B0, nu, k0, omega0, rinf, radius0, mass; 
   double x, b, alpha, beta, step, xmax, bstep;
-  extern double rdotm_start, azimuth_start;
+  extern double rdotm_start, azimuth_start, psi_global;
   double rdotm_newtonian, rdotb2, f, psi, f2, psi2, qtot;
+  double meani, meanq, ifactor;
+  int ntraj;
   
   int i, j, k, nstep, nb=10, angfactor=2, models_loaded=0;
 
@@ -114,7 +116,7 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
    /* calculate the value of |Omega| for a photon travelling along the */
    /* field near the polar cap */
    nu=atof(argv[2]);
-   args[3]=log(nu);
+   args[3]=log(nu/sqrt(1-2*mass/radius0));  /* photon frequency in the frame of the star to look up in atmosphere */
    k0=TWO_PI*nu/c;
    omega0=TWO_OVER_FIFTEEN_ALPHA_OVER_4PI*B0*B0*k0;
 
@@ -125,7 +127,7 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
      xmax=1;
    }
    printf("#  nu= %g Hz B0= %g BQED = %g G E= %g keV\n#  Rinf= %g cm xmax= %g radius0= %g cm mass= %g cm = %g Msun 0.2*omega0R= %g\n#\n",
-	  nu,B0,B0*BCRIT,nu*Planck_h,
+	  nu,B0,B0*BCRIT,nu*Planck_h
 	  rinf,xmax,radius0,mass,mass/MSUN,0.2*omega0*radius0);
    #
    printf("\
@@ -144,17 +146,20 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
 #  Column 10 - magnetic colatitude of emission point [degrees]\n\
 #  Column 11 - zenith angle [degrees]\n\
 #  Column 12 - azimuth angle relative to local B-field [degrees], 0 to 180\n\
-#  Column 13 - initial intensity in X mode\n\
-#  Column 14 - initial intensity in O mode\n\
-#  Column 15 - final intensity in Q [relative to projected magnetic moment]\n\
-#  Column 16 - Integral of Omega ds -- depolarization bandwidth is Energy of Photon/(column 16)\n#\n");
-   printf("#   b        beta      s1       s2      s3       mago        o1        o2      o3    mag_colat  theta    phi       X         O            Q         IOmdL\n");
+#  Column 13 - initial intensity in X mode [from atmosphere model or 1]\n\
+#  Column 14 - initial intensity in O mode [from atmosphere model or 0]\n\
+#  Column 15 - final intensity in Q [assuming X=1, O=0, relative to magnetic moment]\n\
+#  Column 15 - final intensity in Q [relative to projected magnetic moment using Column 13 and 14]\n\
+#  Column 16 - Integral of Omega ds -- depolarization bandwidth is Energy of Photon/(column 16)\n\
+#  Column 17 - psi (angle between subobserver point and emission point along the stellar surface)\n\
+#\n");
+   printf("#   b        beta      s1       s2      s3       mago        o1        o2      o3    mag_colat  theta    phi       X         O            Q          Qatm         IOmdL      psi\n");
 
 
   nstep=1; /* number of initial steps per quadrant */
 
   bstep=xmax*rinf/nb;
-
+  ntraj=meani=meanq=0;
   /*  for (x=0.05;x<xmax;x+=0.1,nstep+=2) {
       b=x*rinf; */
   for (k=0;k<nb;k++,nstep+=2) {
@@ -187,14 +192,24 @@ _alpha_  angle of magnetic moment with line of sight in degrees\n\n\
 	     args[2]=azimuth_start*180.0/PI);
       if (models_loaded) {
 	if (args[0]>90) args[0]=180-args[0];
-	args[1]=x;
+	args[1]=sqrt(1-x*x);
 	evaltree(&parent_node,args,4, res);
 	res[2]=exp(res[2]);
 	res[3]=exp(res[3]);
       }
-      printf(" %10.4e %10.4e %10.4e %10.4e\n",res[2],res[3],qtot,s[OMDL]);
-      
+      printf(" %10.4e %10.4e %10.4e %10.4e %10.4e %10.4e\n",res[2],res[3],qtot,qtot*(res[2]-res[3]),s[OMDL],-psi_global*180.0/PI);
+      ntraj++;
+      meani+=res[2]+res[3];
+      meanq+=qtot*(res[2]-res[3]);
     }
   }
+  ifactor=sqrt(1-2*mass/radius0)*(1-2*mass/radius0);
+  meani=meani/ntraj*ifactor;
+  meanq=meanq/ntraj*ifactor;
+  ifactor=rinf/3.086e21;
+  ifactor=PI*ifactor*ifactor*1e21;
+  printf("#  nu= %g Hz Imean= %g erg/s/cm2/Hz/sr Qmean= %g erg/s/cm2/Hz/sr Fnu= %g Jy Qnu= %g Jy (at 1 kpc, including relativity)\n",
+         nu, meani, meanq, meani*ifactor,meanq*ifactor);
+
   return(0);
 }

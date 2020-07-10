@@ -10,7 +10,7 @@ extern double cosbeta, sinbeta;
 extern double m[4], radius0;
 extern double omega_g[4], magomega_g, omega0, omega_soft;
 double rdotm_start;
-double azimuth_start;
+double azimuth_start, psi_global;
 
 void
 outputdata(double lambda, double *s, double *ds) {
@@ -62,9 +62,9 @@ integrate_path(double omega0_p, double mass_p,
   a2=ghld*MoverR*MoverR;
   x2=x*x;
 
-  s[PHI]=-x*qromb(phiint,0,MoverR);
+  psi_global=s[PHI]=-x*qromb(phiint,0,MoverR);
 #else
-  s[PHI]=-phix(mass/radius0,b/radius0*sqrt(1-2*mass/radius0));
+  psi_global=s[PHI]=-phix(mass/radius0,b/radius0*sqrt(1-2*mass/radius0));
 #endif
 
   /* calculate omega_soft, i.e. the maximum magnitude of Omega */

@@ -44,6 +44,7 @@ parse_trj_line(char *buffer, trj_line *trjptr) {
 data_node *malloc_data_node(int ndata_node) {
   int i;
   data_node *res;
+  // printf("# allocation %d\n",ndata_node);
   res = (data_node *) malloc(ndata_node*sizeof(data_node));
   if (res!=NULL) {
     for (i=0;i<ndata_node;i++) {
@@ -136,7 +137,7 @@ loadtrjfile(char *filename, data_node *nodeptr) {
     nodeptr->children[line_hld.mu_idx].children[line_hld.phi_idx].data[0]=line_hld.phi;
   }
 
-  fclose(in);
+  // fclose(in);
   return(0);
 }
 
@@ -404,6 +405,5 @@ main(int argc, char *argv[]) {
     return(0);
 }
 #endif
-
 
 
