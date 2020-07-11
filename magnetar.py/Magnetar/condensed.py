@@ -1,6 +1,7 @@
-from numpy import sin, cos, arccos, exp, expm1, log, sqrt, clip, minimum, maximum, where, pi, logspace
+from numpy import sin, cos, arccos, radians, exp, expm1, log, sqrt, clip, minimum, maximum, where, pi, logspace
 from Magnetar.utils import atmosphere
 from scipy.integrate import simps
+from Magnetar.simple_atmospheres import bbfunk
 
 class condensed_surface(atmosphere):
     def __init__(self,effective_temperature,mag_strength,mag_inclination,density,fixed_ions=True):
@@ -12,25 +13,30 @@ class condensed_surface(atmosphere):
         self.Z=26.
         self.A=56.
         self.surface_temperature=self.effective_temperature
-        fluxgoal=208452.792*pi**5/15*self.effective_temperature**4
-        # need to update surface temperature so that the outgoing flux is the effective temperature
-        # do this iteratively ... converges very quickly (typically the surface temperature is 5-20% larger than Teff)
-        for ii in range(5):
-            eeloc=logspace(-2,2,101)*self.surface_temperature
-            iiloc,qqloc=self.fluxIQ(eeloc)
-            flux=simps(iiloc,eeloc)*1.0000036200079545**4   # small correction to account for the range in the energy integral
-            self.surface_temperature/=(flux/fluxgoal)**0.25
-#            print(self.surface_temperature)
-    def _bbfunk(self, ee):  # per mode
-        return 208452.792 * ee**3 / expm1(ee / self.surface_temperature) / 2
+        self.adjust_surface_temperature()
+    def __str__(self):
+        outstring='''#
+# class condensed_surface
+#
+# effective_temperature %12g keV
+# surface_temperature   %12g keV
+# mag_strength          %12g Gauss
+# mag_inclination       %12g radians
+# fixed_ions            %12s
+# density               %12g g/cc
+# Z                     %12g
+# A                     %12g
+#       
+''' % (self.effective_temperature, self.surface_temperature, self.mag_strength, self.mag_inclination, self.fixed_ions, self.dens, self.Z, self.A )
+        return outstring+atmosphere.__str__(self)
     #
     # This computes the emissivity from a condensed surface using the approximate treatment
     # by Potekhin et al. (2012, A&A, 546, A121) https://arxiv.org/pdf/1208.6582.pdf
     #
     def emissivity_xo(self,dataarray):
         # get dataarray values
-        thetak=dataarray[-3]
-        phik=dataarray[-2]
+        thetak=radians(dataarray[-3])
+        phik=radians(dataarray[-2])
         ene=dataarray[-1]
         # magnetic field
         B13=self.mag_strength/1e13
@@ -44,7 +50,7 @@ class condensed_surface(atmosphere):
         #
         # geometric stuff
         #
-        thetab=self.mag_inclination
+        thetab=radians(self.mag_inclination)
         stb=sin(thetab)
         ctb=cos(thetab)
         stk=sin(thetak)
@@ -177,13 +183,13 @@ class condensed_surface(atmosphere):
         return emisX,emisO
     def calcIQ(self, dataarray):
         ex,eo = self.emissivity_xo(dataarray)
-        bbintens=self._bbfunk(dataarray[-1])
+        bbintens=bbfunk(dataarray[-1],self.surface_temperature)
         return (eo+ex)*bbintens,(eo-ex)*bbintens
     def xintensity(self,dataarray):
         ex,eo = self.emissivity_xo(dataarray)
-        bbintens=self._bbfunk(dataarray[-1])
+        bbintens=bbfunk(dataarray[-1],self.surface_temperature)
         return ex*bbintens
     def ointensity(self,dataarray):
         ex,eo = self.emissivity_xo(dataarray)
-        bbintens=self._bbfunk(dataarray[-1])
+        bbintens=bbfunk(dataarray[-1],self.surface_temperature)
         return eo*bbintens

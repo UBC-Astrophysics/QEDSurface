@@ -1,5 +1,9 @@
 
 import numpy as np
+from scipy.integrate import simps
+
+def stefan_boltzmann_law(effective_temperature):
+    return 208452.792*np.pi**5/15*effective_temperature**4
 
 class atmosphere:
     def __init__(self):
@@ -124,6 +128,30 @@ class atmosphere:
             return self.calcmeanIQ(dd)
         else:
             return 0
+    def adjust_surface_temperature(self):
+        fluxgoal=stefan_boltzmann_law(self.effective_temperature)
+        # need to update surface temperature so that the outgoing flux is the effective temperature
+        # do this iteratively ... converges very quickly (typically the surface temperature is 5-20% larger than Teff)
+        epeak=4*self.effective_temperature
+        for ii in range(25):
+            self.eeloc=np.logspace(-3,1,151)*epeak
+            self.iiloc,self.qqloc=self.fluxIQ(self.eeloc)
+            flux=simps(self.iiloc,self.eeloc)*1.0000036200079545**4   # small correction to account for the range in the energy integral
+            epeak=self.eeloc[np.argmax(self.iiloc*self.eeloc)]
+            tlast=self.surface_temperature
+            self.surface_temperature/=(flux/fluxgoal)**0.25
+            # print(ii,self.surface_temperature,epeak)
+            if np.abs((tlast-self.surface_temperature)/tlast)<1e-3:
+                break
+    def __str__(self):
+        try:
+            outstring='''#       
+#   Energy[keV]          I          Q/I\n'''
+            for ee,ii,rr in zip(self.eeloc,self.iiloc,self.qqloc/self.iiloc):
+                outstring='%s %12g %12g %12g\n' % (outstring,ee,ii,rr)
+        except AttributeError:
+            outstring=''
+        return outstring+'# '+str(super())+'\n'
 
 from scipy.ndimage import map_coordinates
 
@@ -401,25 +429,6 @@ class bb_atmo(atmosphere):
     def ointensity(self, dataarray):
         return self._bbfunk(dataarray[-1], self.otemp)
 
-#
-# pure X blackbody atmosphere (convenience function with parallel structure to condensed_surface)
-#
-class bb_atmo_purex(atmosphere):
-    def __init__(self,teff,mag_strength,mag_inclination,*args,**kwargs):
-        self.atmo = []
-        self.xtemp = teff*2.0**0.25
-        self.otemp = 0.0
-        self.mag_inclination = mag_inclination
-        self.mag_strength=mag_strength
-
-    def _bbfunk(self, ee, tt):  # per mode
-        return 208452.792 * ee**3 / np.expm1(ee / tt) / 2
-
-    def xintensity(self, dataarray):
-        return self._bbfunk(dataarray[-1], self.xtemp)
-
-    def ointensity(self, dataarray):
-        return 0*dataarray[-1]
 
 #
 # Applies an energy dependent rescaling to an existing atmosphere
