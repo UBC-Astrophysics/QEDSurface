@@ -1,4 +1,6 @@
 from Magnetar.utils import *
+from Magnetar.atmo_lloyd import *
+from Magnetar.scatmo_caiazzo import *
 from Magnetar.comptonized import *
 from Magnetar.condensed import *
 from Magnetar.surface_model import *

@@ -13,6 +13,18 @@ class be_atmo(atmosphere):  # without beaming
         self.omu = 1.0
         self.mag_inclination = 0
         self.loaddata(xtemp, otemp, xmu, omu)
+    def __str__(self):
+        outstring='''#
+# class be_atmo
+#
+# xtemp                %g keV
+# xmu                  %g [in units of xtemp]
+# otemp                %g keV
+# omu                  %g [in units of otemp]
+# magnetic inclination %g
+''' % (self.xtemp,self.xmu,self.otemp,self.omu,self.mag_inclination)
+        return outstring+atmosphere.__str__(self)
+
 
     def loaddata(self, xtemp, otemp, xmu, omu):
         self.xtemp = xtemp
@@ -42,6 +54,17 @@ class compton_bb_atmo(be_atmo):  # with costheta beaming
     def ointensity(self, dataarray):
         return self._befunk(dataarray[-1], self.otemp, self.omu) * np.cos(
             np.radians(dataarray[0]))
+    def __str__(self):
+        outstring='''#
+# class compton_bb_atmo (with costheta beaming)
+#
+# xtemp                %g keV
+# xmu                  %g [in units of xtemp]
+# otemp                %g keV
+# omu                  %g [in units of otemp]
+# magnetic inclination %g
+''' % (self.xtemp,self,otemp,self.mag_inclination)
+        return outstring+atmosphere.__str__(self)
 
 # Comptonize the O-mode to Te in keV
 def Complete_Comptonization(atmo, Te):
@@ -89,7 +112,17 @@ class partial_o_mode_comptonization(atmosphere):
             iif, qqf = self.fluxIQ(self.ee)
             self.ooout *= simps((ii + qq) / self.ee, self.ee) / simps(
                 (iif + qqf) / self.ee, self.ee)
-
+    def __str__(self):
+        outstring='''#
+# class partial_o_mode_comptonization
+#
+# Compton y parameter  %g
+# magnetic inclination %g
+# start of Comptonized atmosphere
+%s
+# end of Comptonized atmosphere
+''' % (self.y,self.mag_inclination,str(self.atmo))
+        return outstring+atmosphere.__str__(self)
     def xintensity(self, dataarray):
         return self.atmo.xintensity(dataarray)
 
@@ -120,6 +153,7 @@ class partial_res_comptonization(atmosphere):
         self.mag_inclination = atmo.mag_inclination
         self.y = y
         self.atmo = atmo
+        self.kTe = kTe
         self.ee = np.logspace(-2, 2, 401)
         self.ii, self.qq = atmo.fluxIQ(self.ee)
         qfrac = self.qq / self.ii
@@ -142,6 +176,19 @@ class partial_res_comptonization(atmosphere):
         self.ooout = 0.5 * (self.iiout + self.qqout)
         self.xxout = 0.5 * (self.iiout - self.qqout)
 
+    def __str__(self):
+        outstring='''#
+# class partial_res_comptonization
+#
+# Compton y parameter  %g
+# Electron temperature %g keV
+# magnetic inclination %g
+# start of Comptonized atmosphere
+%s
+# end of Comptonized atmosphere
+''' % (self.y,self.kTe,self.mag_inclination,str(self.atmo))
+        return outstring+atmosphere.__str__(self)
+         
     def calcIQ(self, dataarray):
         xxloc = self.xintensity(dataarray)
         ooloc = self.ointensity(dataarray)
@@ -190,6 +237,7 @@ class partial_twisted_comptonization(atmosphere):
     def __init__(self, atmo, y, kTe, ehuge, phuge):
         self.mag_inclination = atmo.mag_inclination
         self.y = y
+        self.kTe = kTe
         self.atmo = atmo
         self.ee = np.logspace(-3, 3, 601)
         self.ii, self.qq = atmo.fluxIQ(self.ee)
@@ -217,6 +265,20 @@ class partial_twisted_comptonization(atmosphere):
             self.ee * np.exp(-self.nlndeltaenout), self.ee, qfrac)
         self.ooout = 0.5 * (self.iiout + self.qqout)
         self.xxout = 0.5 * (self.iiout - self.qqout)
+    def __str__(self):
+        outstring='''#
+# class partial_twisted_comptonization
+#
+# Compton y parameter  %g
+# Electron temperature %g keV
+# Transition energy    %g keV
+# Hard power-law index %g
+# magnetic inclination %g
+# start of Comptonized atmosphere
+%s
+# end of Comptonized atmosphere
+''' % (self.y,self.kTe,self.ehuge,self.phuge,self.mag_inclination,str(self.atmo))
+        return outstring+atmosphere.__str__(self)
 
     def calcIQ(self, dataarray):
         xxloc = self.xintensity(dataarray)

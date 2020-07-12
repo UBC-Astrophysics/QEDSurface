@@ -5,7 +5,15 @@ class surface_model(atmosphere):
     def __init__(self):
         self.patches = []
         self.mcolat = []
-
+    
+    def __str__(self):
+        i=1
+        outstring='#\n# surface_model\n#\n'
+        for p,m in zip(self.patches,self.mcolat):
+            outstring='%s#\n# Patch Number %d\n# Magnetic Colatitude %g degrees\n#\n%s' % (outstring,i,m,str(p))
+            i=i+1
+        return outstring+atmosphere.__str__(self)
+    
     def loaddata(self, files, modeltype=None):
         if type(files) is str:
             files = [
@@ -54,7 +62,7 @@ class surface_model(atmosphere):
      where field_mu is the cosine of angle between field at that position and the normal,
            zenith_ang is the angle between the line of sight and the vertical at emission in degrees,
            azimuth1 is the angle between the plane containing k+normal and k+B in degrees
-           energy1 is the energy in keV
+       ``    energy1 is the energy in keV
            
      dataarray can contain as many columns as you want
    meantotalintensity:  
