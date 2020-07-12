@@ -57,10 +57,12 @@ def bb_atmo_purex(teff,mag_strength,mag_inclination,*args,**kwargs):
 #
 # modified blackbody atmosphere (convenience class with parallel structure to condensed_surface)
 #
-#
+# freq_power quantifies how the opacity depends on photon energy: kappa goes as (1/energy)**freq_power
 # freq_power is 2 (E<T) to 3 (E>t) for free-free opacity and zero for scattering
 #
-# sigma_power is (alpha+1)/(4+alpha-beta) if opacity is proportional to density**alpha temperature**beta 
+# sigma_power quantifies how the temperature depends on column density: T goes as sigma**sigma_power
+# sigma_power is (alpha+1)/(4+alpha-beta) if opacity is proportional to density**alpha temperature**beta
+#
 #    unmagnetized free-free : alpha=1, beta=-3.5 -> 0.23529411764705882 (4/17)
 #    magnetized free-free   : alpha=1, beta=-1.5 -> 0.3076923077 (4/13)         
 #    electron-scattering    : alpha=0, beta=0    -> 0.25 (4/16)
@@ -73,7 +75,7 @@ def bb_atmo_purex(teff,mag_strength,mag_inclination,*args,**kwargs):
 #
 #
 class modified_bb_atmo(atmosphere):
-    def __init__(self,teff,mag_strength,mag_inclination,*args,freq_power=2,sigma_power=0.25,kb_suppress=True,limb_darkening=True,**kwargs):
+    def __init__(self,teff,mag_strength,mag_inclination,*args,freq_power=2,sigma_power=4./13.,kb_suppress=True,limb_darkening=True,**kwargs):
         self.effective_temperature  = teff
         self.freq_power = freq_power
         self.sigma_power = sigma_power
