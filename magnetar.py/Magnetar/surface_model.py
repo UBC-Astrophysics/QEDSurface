@@ -145,5 +145,36 @@ class surface_model(atmosphere):
     def calcmeanIQ(self, angkbarray):
         return self._interpolate_double(angkbarray, 'calcmeanIQ')
 
+#
+#
+# For magnetized envelope we have
+#
+# F proportional to B**0.4 cos(psi)**2 (psi is mag_inclination)
+#
+# For a dipole we have
+#
+# B/Bp = ((3*cos(theta)**2+1)/4)**0.5(theta is mag colatitude)
+#
+# cos(psi)**2 = (4 cos(theta)**2)/(3*cos(theta)**2+1)
+#
+# https://ui.adsabs.harvard.edu/abs/1998MNRAS.300..599H
+#
+# Let mu=cos(theta) 
+#
+# F = ((3*mu*mu+1)/4)**0.2*(4*mu*mu)/(3*mu*mu+1)
+#
 def dipole_model(cval,tpole,bpole,*args,**kwargs):
-    return cval(tpole,bpole,0.0,*args,**kwargs)    
+    fval=np.linspace(0.05,0.95,10)
+    costheta=fval**(1/2.2)  # cumulative flux goes as costheta**2.2 (almost sintheta**2)
+    mcolat=np.degrees(np.arccos(costheta))
+    cos2psi=(4*costheta**2/(3*costheta**2+1))
+    minclination=np.degrees(np.arccos(cos2psi**0.5))
+    boverbp=((3*costheta**2+1)/4)**0.5
+
+    teff=( boverbp**0.4*cos2psi )**0.25*tpole
+    bval=bpole*boverbp
+    surfmodel=surface_model()
+    for t,b,binc,bcolat in zip(teff,bval,minclination,mcolat):
+        surfmodel.add_patch(cval(t,b,binc,*args,**kwargs),bcolat)
+    
+    return surfmodel.sort_patches()    
