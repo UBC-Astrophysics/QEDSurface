@@ -233,6 +233,75 @@ class pfield:
     def _ipython_display_(self):
         return self.plot(datamap=np.log10(self.data['X']+self.data['O']),cmap='inferno',ellipsecolor=[0,0.9,0])
 
+class pfield_multinu:
+    def __init__(self):
+        self.mu2nu,self.nufil,self.mufil,self.pfi = [],[],[],[]
+        self.ebins=[]
+        self.iint=[]
+        self.qint=[]        
+    def loaddata(self, files, modeltype=None):
+        self.nufil,self.mufil,self.pfi = [],[],[]
+        if type(files) is str:
+            files = [
+                files,
+            ]
+        for i in files:
+            pfii= pfield()
+            pfii.loaddata(i)
+            self.pfi.append(pfii)
+            self.mufil.append(pfii.mu)
+            self.nufil.append(pfii.nu)
+        self.mufil=np.array(self.mufil)
+        self.nufil=np.array(self.nufil)
+        self.mu2nu=self.mufil*self.mufil*self.nufil
+        ind = np.argsort(self.mu2mu)
+        self.mufil=self.mufil[ind]
+        self.nufil=self.nufil[ind]
+        self.mu2nu=self.mu2nu[ind]
+        self.pfi = [self.pfi[i] for i in ind]
+        return self
+    def recalculate(self, energy, atmo_map, mu=1e30,gtt=1):
+        dataarray = np.array([
+            self.data['mag_colat'], self.data['theta'], self.data['phi'],
+            self.pt * np.full(len(self.data['mag_colat']), energy / gtt)
+        ])
+        ii, qq = atmo_map.calcIQ(dataarray)
+        imean = np.mean(ii) * gtt**3
+        dotprod = [self.pfi[i] for i in ind]
+
+        qmean_values = [np.mean((s.data['s1'] * np.cos(
+            2 * s.data['beta']) - s.data['s2'] * np.sin(
+                2 * s.data['beta']))*qq) for s in pfii]
+        qmean=-np.interp(energy*2.41798926e17*mu*mu,self.mu2nu,qmean_values)*gtt**3
+        return imean, qmean
+    def calcvalues(self,surfacemodel,ebins=None,mu=1e30,gtt=1):
+        if ebins is None:
+            ebins=np.logspace(-0.5,1.5,100)
+        self.ebins=np.array(ebins)
+        self.iint=[]
+        self.qint=[]
+        for en in ebins:
+            self.recalculate(en,surfacemodel,mu=mu,gtt=gtt)
+            self.iint.append(self.imean)
+            self.qint.append(self.qmean)
+        self.iint=np.array(self.iint)
+        self.qint=np.array(self.qint)
+    def __str__(self):
+        outstring='''
+#
+# class pfield_multinu
+#
+# filename      %s
+#
+#   Phi[rad]  Energy[keV]            I          Q/I
+''' % (self.filename)
+        for ee,ii,rr in zip(self.ebins,self.iint,np.array(self.qint)/np.array(self.iint)):
+            outstring='%s%12g %12g %12g %12g\n' % (outstring,self.pfi[0].theta*np.pi/180.0,ee,ii,rr)
+        return outstring
+    def recalculate(self,energy,surfacemodel,gtt=1):
+        for pf in self.pfi:
+            pf.recalculate(energy,surfacemodel,gtt=gtt)
+
 class pfield_array:
     def __init__(self):
         self.mufil,self.pfi = [],[]
