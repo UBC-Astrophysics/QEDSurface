@@ -272,7 +272,7 @@ class pfield_multinu:
         qmean_values = [np.mean((s.data['s1'] * np.cos(
             2 * s.data['beta']) - s.data['s2'] * np.sin(
                 2 * s.data['beta']))*qq) for s in pfii]
-        qmean=-np.interp(energy*2.41798926e17*mu*mu,self.mu2nu,qmean_values)*gtt**3
+        qmean=-np.interp(np.log(energy*2.41798926e17*mu*mu),np.log(self.mu2nu),qmean_values)*gtt**3
         return imean, qmean
     def calcvalues(self,surfacemodel,ebins=None,mu=1e30,gtt=1):
         if ebins is None:
