@@ -1,6 +1,8 @@
 import numpy as np
+from Magnetar.xopen import xopen
+
 class pfield:
-    def __init__(self):
+    def __init__(self,pfield_file=None):
         self.data = []
         self.imean = 0
         self.qmean = 0
@@ -17,9 +19,11 @@ class pfield:
         self.iint=[]
         self.qint=[]        
         self.oneSided=True
+        if pfield_file is not None:
+            self.loaddata(pfield_file)
 
     def loaddata(self, pfield_file):
-        with open(pfield_file, 'r') as f:
+        with xopen(pfield_file, 'r') as f:
             line = f.readline()
             a = line.split()
             try:

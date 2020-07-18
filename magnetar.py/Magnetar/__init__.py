@@ -1,4 +1,5 @@
 from Magnetar.utils import *
+from Magnetar.xopen import *
 from Magnetar.atmo_lloyd import *
 from Magnetar.scatmo_caiazzo import *
 from Magnetar.comptonized import *

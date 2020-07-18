@@ -2,6 +2,10 @@ import numpy as np
 from Magnetar.utils import atmosphere
 from scipy.ndimage import map_coordinates
 
+def rreplace(s, old, new, occurrence):
+    li = s.rsplit(old, occurrence)
+    return new.join(li)
+
 class atmo_lloyd(atmosphere):
     '''
   totalintensity: 
@@ -19,18 +23,19 @@ class atmo_lloyd(atmosphere):
 
     '''
 
-    def __init__(self):
+    def __init__(self,file=None):
         self.t = []
         self.x = []
         self.o = []
+        self.file = ""
         self.mag_inclination = 0
-
+        if file is not None:
+            self.loaddata(file)
     def loaddata(self, file):
-        header = file.rsplit('.', 1)[0]
-        enerkeV = np.loadtxt(header + '.gnu', usecols=(3), unpack=True)
-        self.t, self.x, self.o = np.loadtxt(
-            header + '.int', usecols=(2, 3, 4), unpack=True)
-        theta, phi = np.loadtxt(header + '.trj', usecols=(4, 6), unpack=True)
+        # header = file.rsplit('.', 1)[0]
+        enerkeV = np.loadtxt(rreplace(file,'.int','.gnu',1), usecols=(3), unpack=True)
+        self.t, self.x, self.o = np.loadtxt(file, usecols=(2, 3, 4), unpack=True)
+        theta, phi = np.loadtxt(rreplace(file,'.int','.trj',1), usecols=(4, 6), unpack=True)
         self.xxarray = []
         self.yyarray = []
         self.shape = []
