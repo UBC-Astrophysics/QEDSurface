@@ -2,9 +2,11 @@ import numpy as np
 from Magnetar.utils import atmosphere
 
 class surface_model(atmosphere):
-    def __init__(self):
+    def __init__(self,files=None):
         self.patches = []
         self.mcolat = []
+        if files is not None:
+            self.loaddata(files)
     
     def __str__(self):
         i=1

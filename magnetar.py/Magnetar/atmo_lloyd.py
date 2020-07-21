@@ -1,6 +1,11 @@
+#from numba import jit
 import numpy as np
-from Magnetar.utils import atmosphere
+from .utils import atmosphere
 from scipy.ndimage import map_coordinates
+try:
+    from .fast_interp import interp3d, interp2d
+except:
+    pass
 
 def rreplace(s, old, new, occurrence):
     li = s.rsplit(old, occurrence)
@@ -48,6 +53,22 @@ class atmo_lloyd(atmosphere):
         self.t = np.reshape(self.t, self.shape)
         self.x = np.reshape(self.x, self.shape)
         self.o = np.reshape(self.o, self.shape)
+
+        try:
+            if self.shape[1]==1:
+                tempshape=[self.shape[0],self.shape[2]]
+                tfunk= interp2d([0,0],tempshape,[1,1],np.reshape(self.t,tempshape))
+                xfunk= interp2d([0,0],tempshape,[1,1],np.reshape(self.x,tempshape))
+                ofunk= interp2d([0,0],tempshape,[1,1],np.reshape(self.o,tempshape))
+                self.tfunk= (lambda a,b,c : tfunk(a,c))
+                self.xfunk= (lambda a,b,c : xfunk(a,c))
+                self.ofunk= (lambda a,b,c : ofunk(a,c))
+            else:
+                self.tfunk= interp3d([0,0,0],self.shape,[1,1,1],self.t)
+                self.xfunk= interp3d([0,0,0],self.shape,[1,1,1],self.x)
+                self.ofunk= interp3d([0,0,0],self.shape,[1,1,1],self.o)
+        except:
+            self.tfunk = None
         return self
     def __str__(self):
         outstring='''#
@@ -57,6 +78,7 @@ class atmo_lloyd(atmosphere):
 # magnetic inclination %g
 ''' % (self.file,self.mag_inclination)
         return outstring+atmosphere.__str__(self)
+    # @jit(nopython=True,parallel=True)
     def _calcindex(self, dataarray):
         res = []
         dataarray[1] = np.remainder(dataarray[1], 360)
@@ -70,9 +92,20 @@ class atmo_lloyd(atmosphere):
         if (len(datacube) == 0):
             return 1
         else:
-            res = map_coordinates(
-                datacube, self._calcindex(dataarray), order=3, mode='nearest')
-            return np.where(res > 0, res, 0)
+            if self.tfunk is None:
+                res = map_coordinates(
+                    datacube, self._calcindex(dataarray), order=3, mode='nearest')
+                return np.where(res > 0, res, 0)
+            else:
+                ci=self._calcindex(dataarray)
+                #print(ci[2])
+                if datacube is self.o:
+                    res=self.ofunk(ci[0],ci[1],ci[2])
+                elif datacube is self.x:
+                    res=self.xfunk(ci[0],ci[1],ci[2])
+                else:
+                    res=self.tfunk(ci[0],ci[1],ci[2])
+                return np.where(res > 0, res, 0)
 
     def _meanintensity(self, angkbarray, datacube):
         if (len(datacube) == 0):
@@ -89,18 +122,8 @@ class atmo_lloyd(atmosphere):
                 np.abs(thetaplus),
                 np.where(thetaplus > 0, 0, 180), angkbarray[1]
             ]
-            resplus = map_coordinates(
-                datacube,
-                self._calcindex(dataarrayplus),
-                order=3,
-                mode='nearest')
-            resplus = np.where(resplus > 0, resplus, 0)
-            resminus = map_coordinates(
-                datacube,
-                self._calcindex(dataarrayminus),
-                order=3,
-                mode='nearest')
-            resminus = np.where(resminus > 0, resminus, 0)
+            resplus = _intensity(dataarrayplus,datacube)
+            resminus = _intensity(dataarrayminus,datacube)
             return 0.5 * (np.where(np.abs(thetaminus) < 90, resminus, 0) +
                           np.where(np.abs(thetaplus) < 90, resplus, 0))
 
