@@ -97,7 +97,7 @@ class atmo_lloyd(atmosphere):
                     datacube, self._calcindex(dataarray), order=3, mode='nearest')
                 return np.where(res > 0, res, 0)
             else:
-                ci=self._calcindex(dataarray)
+                ci=np.array(self._calcindex(dataarray))
                 #print(ci[2])
                 if datacube is self.o:
                     res=self.ofunk(ci[0],ci[1],ci[2])

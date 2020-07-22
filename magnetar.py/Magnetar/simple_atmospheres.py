@@ -90,7 +90,7 @@ def bb_atmo_purex(teff,mag_strength,mag_inclination,*args,**kwargs):
 @jit(nopython=True,parallel=True)
 def _xintensity(dataarray,surface_temperature,freq_power,sigma_power,ecyc,limb_darkening):
     ee=dataarray[-1]
-    sigmax=np.abs(surface_temperature/ee)*freq_power
+    sigmax=np.abs(surface_temperature/ee)**freq_power
     sigmax*=np.where(ee<ecyc,(ee/ecyc)**2,1)
     if limb_darkening:
         tempx=surface_temperature*np.abs(np.cos(np.radians(dataarray[-3]))/sigmax)**sigma_power
@@ -146,7 +146,7 @@ class modified_bb_atmo(atmosphere):
         return outstring+atmosphere.__str__(self)
 
     def xintensity(self, dataarray):
-        return _xintensity(dataarray,self.surface_temperature,self.freq_power,self.sigma_power,self.ecyc,self.limb_darkening)
+        return _xintensity(np.array(dataarray),self.surface_temperature,self.freq_power,self.sigma_power,self.ecyc,self.limb_darkening)
  
     def ointensity(self, dataarray):
-        return _ointensity(dataarray,self.surface_temperature,self.freq_power,self.sigma_power,self.ecyc,self.limb_darkening,self.kb_suppress,self.mag_inclination)
+        return _ointensity(np.array(dataarray),self.surface_temperature,self.freq_power,self.sigma_power,self.ecyc,self.limb_darkening,self.kb_suppress,self.mag_inclination)
