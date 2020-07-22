@@ -1,6 +1,17 @@
+try:
+    from numba import jit
+except:
+    def jit(**kwargs):
+        def jitd(func):
+            def helper(*args, **kwargs):
+                return func(*args, **kwargs)
+            return helper
+        return jitd
+    
 from Magnetar.utils import atmosphere
 import numpy as np
 
+@jit(nopython=True,parallel=True)
 def bbfunk( ee, tt):  # per mode
     return 208452.792 * ee**3 / np.expm1(ee / tt) / 2
 
@@ -74,6 +85,36 @@ def bb_atmo_purex(teff,mag_strength,mag_inclination,*args,**kwargs):
 # https://ui.adsabs.harvard.edu/abs/1984ApJ...287..244H for unmagnetized case
 #
 #
+
+# Auxiliary functions
+@jit(nopython=True,parallel=True)
+def _xintensity(dataarray,surface_temperature,freq_power,sigma_power,ecyc,limb_darkening):
+    ee=dataarray[-1]
+    sigmax=np.abs(surface_temperature/ee)*freq_power
+    sigmax*=np.where(ee<ecyc,(ee/ecyc)**2,1)
+    if limb_darkening:
+        tempx=surface_temperature*np.abs(np.cos(np.radians(dataarray[-3]))/sigmax)**sigma_power
+    else:
+        tempx=surface_temperature*np.abs(1/sigmax)**sigma_power
+    return bbfunk(ee,tempx)
+
+@jit(nopython=True,parallel=True)
+def _ointensity(dataarray,surface_temperature,freq_power,sigma_power,ecyc,limb_darkening,kb_suppress,mag_inclination):
+    ee=dataarray[-1]
+    sigmao=np.abs(surface_temperature/ee)**freq_power
+    if kb_suppress:
+        coskb2=(np.cos(np.radians(mag_inclination)
+                   ) * np.cos(np.radians(dataarray[-3])) +
+            np.sin(np.radians(mag_inclination)
+                   ) * np.sin(np.radians(dataarray[-3])
+                              ) * np.cos(np.radians(dataarray[-2])))**2
+        sigmao*=np.where(ee<ecyc,(1-coskb2)+coskb2*(ee/ecyc)**2,1)
+    if limb_darkening:
+         tempo=surface_temperature*np.abs(np.cos(np.radians(dataarray[-3]))/sigmao)**sigma_power
+    else:
+         tempo=surface_temperature*np.abs(1/sigmao)**sigma_power
+    return bbfunk(ee,tempo)
+
 class modified_bb_atmo(atmosphere):
     def __init__(self,teff,mag_strength,mag_inclination,*args,freq_power=2,sigma_power=4./13.,kb_suppress=True,limb_darkening=True,**kwargs):
         self.effective_temperature  = teff
@@ -103,30 +144,9 @@ class modified_bb_atmo(atmosphere):
 #       
 ''' % (self.effective_temperature, self.surface_temperature, self.mag_strength, self.mag_inclination, self.ecyc, self.kb_suppress, self.limb_darkening, self.freq_power, self.sigma_power )
         return outstring+atmosphere.__str__(self)
+
     def xintensity(self, dataarray):
-        ee=dataarray[-1]
-        sigmax=np.abs(self.surface_temperature/ee)**self.freq_power
-        sigmax*=np.where(ee<self.ecyc,(ee/self.ecyc)**2,1)
-        if self.limb_darkening:
-            tempx=self.surface_temperature*np.abs(np.cos(np.radians(dataarray[-3]))/sigmax)**self.sigma_power
-        else:
-            tempx=self.surface_temperature*np.abs(1/sigmax)**self.sigma_power
-        return bbfunk(ee,tempx)
-
+        return _xintensity(dataarray,self.surface_temperature,self.freq_power,self.sigma_power,self.ecyc,self.limb_darkening)
+ 
     def ointensity(self, dataarray):
-        ee=dataarray[-1]
-        sigmao=np.abs(self.surface_temperature/ee)**self.freq_power
-        if self.kb_suppress:
-            coskb2=(np.cos(np.radians(self.mag_inclination)
-                       ) * np.cos(np.radians(dataarray[-3])) +
-                np.sin(np.radians(self.mag_inclination)
-                       ) * np.sin(np.radians(dataarray[-3])
-                                  ) * np.cos(np.radians(dataarray[-2])))**2
-            sigmao*=np.where(ee<self.ecyc,(1-coskb2)+coskb2*(ee/self.ecyc)**2,1)
-            
-        if self.limb_darkening:
-             tempo=self.surface_temperature*np.abs(np.cos(np.radians(dataarray[-3]))/sigmao)**self.sigma_power
-        else:
-             tempo=self.surface_temperature*np.abs(1/sigmao)**self.sigma_power
-
-        return bbfunk(ee,tempo)
+        return _ointensity(dataarray,self.surface_temperature,self.freq_power,self.sigma_power,self.ecyc,self.limb_darkening,self.kb_suppress,self.mag_inclination)
