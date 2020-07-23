@@ -222,16 +222,42 @@ class partial_res_comptonization(atmosphere):
 
 # new model that does the up-scattering for both low and high energy power-law
 # the parameters are y, kTe, maximum relative energy boost for low-E power-law, high-energy slope in phase-space density
-# the final parameter is the slope of E f_E minus 4! \
+# the final parameter is the slope of E f_E = f_logE minus 4! \
 # e.g.
 # tw_patch150=Magnetar.partial_twisted_comptonization(allsurface.patches[3],0.151,150,7.0,-2.7)
 #
 # if high-energy part came from Kompaneet's equation with constant kTe and sigma then
+#
 # -2.7 = -1.5 pm sqrt (2.25 + 4/y)
 # -1.2 = pm sqrt (2.25 + 4/y) -> 1.44 = 2.25 + 4/y -> y= -4.93 ( ? nonsense )
+#
 # so high-energy part comes from another process ... e.g. scattering off of relativistic electrons with a power-law distribution
-# where the number of scatterers increases with energy as E^0.4 ... there are more electrons on loops closer to the star and they 
+# where the number of scatterers increases with energy.
+#
+# The observed slope of E f_E is E^1.3 at high energy so we need the final parameter to be 0.3 - 4 = -2.7.  
+#
+# Q: What does this final parameter mean physically?  
+#
+# A: It is the power-law index of the phase-space distribution function dN/(dx^3 dp^3) is proportional to (p)^-2.7 
+# so f = dN/(d gamma p) is proportational to (p)^-0.7 which means that the energy in the population will diverge.
+#
+# The total energy of the population will converge 
+#
+# if dN/(dx^3 dp^3) is proportional to (p)^-alpha and alpha greater than 4.
+#
+# or f = dN/(dp) proportional to (p)^-beta with beta=alpha-2 greater than 2.
+#
+# To fit the data with this model we have alpha=2.7 and beta=0.7.  For the j-bundle in 
+#
+# https://iopscience.iop.org/article/10.1088/0004-637X/762/1/13/pdf
+#
+# appears to have dN/dln gamma = gamma^-0.8 or dN/dgamma = (gamma)
+#
+# as E^0.4 ... there are more electrons on loops closer to the star and they 
 # scatter photons to higher energies ... Efinal = Gamma E
+#
+#
+#
 
 class partial_twisted_comptonization(atmosphere):
     def __init__(self, atmo, y, kTe, ehuge, phuge):
