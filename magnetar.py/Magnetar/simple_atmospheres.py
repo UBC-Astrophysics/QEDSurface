@@ -66,7 +66,8 @@ def bb_atmo_purex(teff,mag_strength,mag_inclination,*args,**kwargs):
     return bb_atmo(teff,mag_strength,mag_inclination,ofraction=0)
 
 class Thompson_Kostenko_Magnetosphere(atmosphere):
-    def __init__(self,normalization=1,alpha=1):
+    def __init__(self,mag_inclination,normalization=1,alpha=1):
+        self.mag_inclination=mag_inclination
         self.normalization=normalization
         self.alpha=alpha
     def __str__(self):
@@ -78,7 +79,7 @@ class Thompson_Kostenko_Magnetosphere(atmosphere):
 ''' % (normalization,alpha)
         return outstring+atmosphere.__str__(self)
     @jit(nopython=True,parallel=True)
-    def _ointensity(dataarray,normalization,alpha):
+    def _ointensity(dataarray,mag_inclination,normalization,alpha):
         ee=dataarray[-1]/10.0
         sigmao=np.abs(surface_temperature/ee)**freq_power
         coskb2=(np.cos(np.radians(mag_inclination)
@@ -88,7 +89,7 @@ class Thompson_Kostenko_Magnetosphere(atmosphere):
                                   ) * np.cos(np.radians(dataarray[-2])))**2
         return normalization*ee**alpha*(1.0-coskb2)
     def ointensity(self, dataarray):
-        return Thompson_Kostenko_Magnetosphere._ointensity(np.array(dataarray),self.normalization,self.alpha)
+        return Thompson_Kostenko_Magnetosphere._ointensity(np.array(dataarray),self.mag_inclination,self.normalization,self.alpha)
     def xintensity(self, dataarray):
         return 0.0 # np.zeros((len(dataarray[-1])))
       
