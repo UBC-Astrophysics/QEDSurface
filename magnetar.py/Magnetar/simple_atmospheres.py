@@ -65,6 +65,35 @@ class bb_atmo(atmosphere):
 def bb_atmo_purex(teff,mag_strength,mag_inclination,*args,**kwargs):
     return bb_atmo(teff,mag_strength,mag_inclination,ofraction=0)
 
+class Thompson_Kostenko_Magnetosphere(atmosphere):
+    def __init__(self,normalization=1,alpha=1):
+        self.normalization=normalization
+        self.alpha=alpha
+    def __str__(self):
+        outstring='''#
+# class modified_bb_atmo
+#
+# normalization %12g at 10 keV
+# alpha         %12g
+''' % (normalization,alpha)
+        return outstring+atmosphere.__str__(self)
+    @jit(nopython=True,parallel=True)
+    def _ointensity(dataarray,normalization,alpha):
+        ee=dataarray[-1]/10.0
+        sigmao=np.abs(surface_temperature/ee)**freq_power
+        coskb2=(np.cos(np.radians(mag_inclination)
+                           ) * np.cos(np.radians(dataarray[-3])) +
+                    np.sin(np.radians(mag_inclination)
+                           ) * np.sin(np.radians(dataarray[-3])
+                                  ) * np.cos(np.radians(dataarray[-2])))**2
+        return normalization*ee**alpha*(1.0-coskb2)
+    def ointensity(self, dataarray):
+        return Thompson_Kostenko_Magnetosphere._ointensity(np.array(dataarray),self.normalization,self.alpha)
+    def xintensity(self, dataarray):
+        return 0.0 # np.zeros((len(dataarray[-1])))
+      
+        
+
 #
 # modified blackbody atmosphere (convenience class with parallel structure to condensed_surface)
 #
