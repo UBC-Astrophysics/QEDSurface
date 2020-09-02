@@ -84,7 +84,6 @@ class Thompson_Kostenko_Magnetosphere(atmosphere):
     @jit(nopython=True,parallel=True)
     def _ointensity(dataarray,mag_inclination,normalization,alpha):
         ee=dataarray[-1]/10.0
-        sigmao=np.abs(surface_temperature/ee)**freq_power
         coskb2=(np.cos(np.radians(mag_inclination)
                            ) * np.cos(np.radians(dataarray[-3])) +
                     np.sin(np.radians(mag_inclination)
