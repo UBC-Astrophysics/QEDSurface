@@ -5,6 +5,7 @@ class surface_model(atmosphere):
     def __init__(self,files=None):
         self.patches = []
         self.mcolat = []
+        self.mag_inclination = -99
         if files is not None:
             self.loaddata(files)
     
