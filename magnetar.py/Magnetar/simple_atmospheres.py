@@ -65,8 +65,11 @@ class bb_atmo(atmosphere):
 def bb_atmo_purex(teff,mag_strength,mag_inclination,*args,**kwargs):
     return bb_atmo(teff,mag_strength,mag_inclination,ofraction=0)
 
+#
+# Thompson_Kostenko_Magnetosphere (convenience class function with parallel structure to condensed_surface)
+#
 class Thompson_Kostenko_Magnetosphere(atmosphere):
-    def __init__(self,mag_inclination,normalization=1,alpha=1):
+    def __init__(self,teff,mag_strength,mag_inclination,normalization=1,alpha=1):
         self.mag_inclination=mag_inclination
         self.normalization=normalization
         self.alpha=alpha
