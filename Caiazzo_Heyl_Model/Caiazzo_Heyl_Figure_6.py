@@ -91,7 +91,8 @@ try:
     from ixpeobssim import IXPEOBSSIM_CONFIG_ASCII
     from ixpeobssim.config import file_path_to_model_name
     from ixpeobssim.core.spline import xInterpolatedBivariateSpline
-    from ixpeobssim.srcmodel.roi import xPeriodicPointSource, xEphemeris, xROIModel
+    from ixpeobssim.srcmodel.roi import xPeriodicPointSource,  xROIModel
+    from ixpeobssim.srcmodel.ephemeris import xEphemeris
     from ixpeobssim.utils.matplotlib_ import plt, setup_gca, last_line_color
     ixpe_loaded=True
 except ImportError:
